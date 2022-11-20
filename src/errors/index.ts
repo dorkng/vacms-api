@@ -43,7 +43,14 @@ export class UnauthorizedError extends SystemError {
 
 export class BadRequestError extends SystemError {
   constructor(message?: string) {
-    super(400, null, message || 'Bad Request');
+    super(400, null, message || 'Bad request.');
+    Object.setPrototypeOf(this, new.target.prototype);
+  }
+}
+
+export class ForbiddenError extends SystemError {
+  constructor(message?: string) {
+    super(403, null, message || 'Access denied.');
     Object.setPrototypeOf(this, new.target.prototype);
   }
 }
