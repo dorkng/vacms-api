@@ -1,4 +1,5 @@
 import { Sequelize, Options } from 'sequelize';
+import { init as initModels } from './models';
 import serverConfig from '../config/sever.config';
 
 class DB {
@@ -21,9 +22,11 @@ class DB {
         serverConfig.DB_PASSWORD,
         options,
       );
+      initModels(this.sequelize);
       if (serverConfig.NODE_ENV === 'development') {
         // await this.sequelize.sync({ alter: true });
         // await this.sequelize.sync({ force: true });
+        // await this.sequelize.sync();
       }
       serverConfig.DEBUG('Connected to database.');
       return this.sequelize;

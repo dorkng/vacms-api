@@ -1,5 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { NotFoundError } from '../errors';
+import authMiddleware from '../middlewares/auth.middleware';
+import authRoutes from './auth.route';
+import departmentRoutes from './department.route';
+import userRoutes from './user.route';
 
 class Routes {
   public router: Router;
@@ -20,7 +24,16 @@ class Routes {
       });
     });
 
-    this.router.all('*', (req: Request, res: Response) => {
+    this.router.use('/auth', authRoutes);
+
+    this.router.use('/user', userRoutes);
+    
+    this.router.use(authMiddleware.validateUserToken);
+
+    this.router.use('/department', authMiddleware.validateSuperAdminAccess, departmentRoutes);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    this.router.use('*', (req: Request, res: Response) => {
       throw new NotFoundError();
     });
   }
