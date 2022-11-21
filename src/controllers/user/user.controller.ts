@@ -15,7 +15,6 @@ export default class UserController {
       await notificationUtil.sendAccountCreationMail(user);
       return res.status(201).json({
         message: 'User created successfully.',
-        data: user,
       });
     } catch (error) {
       serverConfig.DEBUG(`Error in user create controller method: ${error}`);

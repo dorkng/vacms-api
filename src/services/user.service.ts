@@ -71,9 +71,9 @@ class UserService {
   public async validateUserVerification(userId: number, otp: string): Promise<User> {
     const now = new Date(Date.now());
     const verification = await this.UserVerificationModel.findOne({
-      where: { userId, otp, expiresOn: { [Op.gte]: now, isUsed: false } },
+      where: { userId, otp, expiresOn: { [Op.gte]: now }, isUsed: false },
     });
-    if (!verification) throw new ConflictError('The otp you entered is invalid.');
+    if (!verification) throw new ConflictError('The otp you entered is invalid/expired.');
     await verification.set('isUsed', true).save();
     const user = await this.get(userId);
     return user;

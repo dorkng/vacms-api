@@ -37,7 +37,7 @@ class UserUtil {
   }
 
   public generateOtp() {
-    return crypto.randomBytes(256).toString('ascii').slice(0, 6);
+    return  Math.random().toString().slice(3, 9);
   }
 
   public getOtpExpiration() {
