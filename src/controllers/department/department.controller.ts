@@ -23,7 +23,8 @@ export default class DepartmentController {
 
   protected async index(req: Request, res: Response, next: NextFunction): Promise<Response> {
     try {
-      const departments = await departmentService.getAll();
+      const { limit, offset } = req;
+      const departments = await departmentService.getAll(limit, offset);
       return res.status(200).json({
         message: 'Departments retrieved successfully.',
         data: departments,
