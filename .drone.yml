@@ -45,17 +45,8 @@ steps:
         - cp /var/www/envs/vacms/.env.staging /var/www/webapps/vacms/vacmsapi/.env
         - pushd /var/www/webapps/vacms/vacmsapi
         - npm install
-        - npm start
+        - npm test
     when:
       branch:
         - develop
 
-services:
-  - name: redis
-    image: redis
-
-  - name: mysql
-    image: mysql
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-      MYSQL_DATABASE: test
