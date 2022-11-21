@@ -21,7 +21,7 @@ class NotificationUtil {
   }
 
   public async sendOtpNotification(user: User, verification: UserVerification): Promise<void> {
-    await this.sendOtpSms(user, verification);
+    // await this.sendOtpSms(user, verification);
     await this.sendOtpMail(user, verification);
   }
 
