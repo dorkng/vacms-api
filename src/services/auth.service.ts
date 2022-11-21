@@ -10,7 +10,7 @@ import notificationUtil from '../utils/notification.util';
 class AuthService {
   private UserModel = User;
 
-  public async login(userId: number, otp: string) {
+  public async login(userId: number, otp: string): Promise<{ user: User; token: string; }> {
     const user = await userService.validateUserVerification(userId, otp);
     const token = this.generateToken(user);
     return { user, token };
@@ -24,7 +24,8 @@ class AuthService {
       throw new ConflictError('Email or password is incorrect');
     }
     await this.generateAndSend2FA(user);
-    return user;
+    const { password: pass, ...userWithPass } = user.toJSON();
+    return userWithPass as User;
   }
 
   private validatePassword(user: User, password: string): boolean {
@@ -32,7 +33,7 @@ class AuthService {
   }
 
   private generateToken(user: User): string {
-    return jwt.sign({ ...user }, serverConfig.AUTH_SECRET, { 
+    return jwt.sign({ ...user.toJSON() }, serverConfig.AUTH_SECRET, { 
       expiresIn: serverConfig.JWT_EXPIRATION,
     });
   }

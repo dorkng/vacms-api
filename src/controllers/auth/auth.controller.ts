@@ -13,7 +13,7 @@ export default class AuthenticateController {
       const { body: { email, password } } = req;
       const user = await authService.validateUser(email, password);
       return res.status(200).json({
-        message: 'Enter the otp send to you.',
+        message: 'Enter the otp sent to you.',
         data: user,
       });
     } catch (error) {
