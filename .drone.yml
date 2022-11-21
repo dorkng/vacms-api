@@ -9,11 +9,10 @@ trigger:
     - refs/heads/VA-*
 
 steps:
-  - name: test
+  - name: install
     image: node:latest
     commands:
     - npm install
-    - npm test
 
   - name: deploy
     image: drillster/drone-rsync
