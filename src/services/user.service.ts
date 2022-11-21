@@ -3,6 +3,7 @@ import { Op } from 'sequelize';
 import { User, UserAccess, UserVerification } from '../db/models';
 import { NotFoundError, ConflictError } from '../errors';
 import userUtil from '../utils/user.util';
+import authService from './auth.service';
 
 class UserService {
   private UserModel = User;
@@ -104,6 +105,21 @@ class UserService {
       throw new ConflictError('Link is invalid.');
     }
     await user.set('password', password).save();
+    return user.reload();
+  }
+
+  public async changePassword(userId: number, data: unknown): Promise<User> {
+    const user = await this.UserModel.scope('withPassword').findByPk(userId);
+    const {
+      currentPassword, confirmPassword,
+    } = await userUtil.changePasswordSchema.validateAsync(data);
+    if (!authService.validatePassword(user, currentPassword)) {
+      throw new ConflictError('Current password is incorrect.');
+    }
+    if (authService.validatePassword(user, confirmPassword)) {
+      throw new ConflictError('Current password cannot be used as new password.');
+    }
+    await user.set('password', confirmPassword).save();
     return user.reload();
   }
 }

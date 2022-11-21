@@ -27,6 +27,12 @@ class UserUtil {
       .label('User Access'),
   });
 
+  public changePasswordSchema = Joi.object().keys({
+    currentPassword: Joi.string().required().label('Current Password'),
+    newPassword: Joi.string().min(8).required().label('New Password'),
+    confirmPassword: Joi.ref('newPassword'),
+  });
+
   public validateUserPassword = Joi.object().keys({
     password: Joi.string().min(8).required().label('Password'),
     confirmPassword: Joi.ref('password'),

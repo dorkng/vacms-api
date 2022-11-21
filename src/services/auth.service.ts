@@ -28,7 +28,7 @@ class AuthService {
     return userWithPass as User;
   }
 
-  private validatePassword(user: User, password: string): boolean {
+  public validatePassword(user: User, password: string): boolean {
     return bcrypt.compareSync(password, user.password);
   }
 

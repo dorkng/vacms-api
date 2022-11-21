@@ -12,7 +12,7 @@ class MeRoutes extends MeController {
   }
 
   private routes(): void {
-    this.router.route('/').get(this.get);
+    this.router.route('/').get(this.get).patch(this.update);
   }
 }
 
