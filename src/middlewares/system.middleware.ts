@@ -29,6 +29,18 @@ class SystemMiddlewares {
       },
     });
   }
+
+  public formatRequestQuery(req: Request, res: Response, next: NextFunction ) {
+    try {
+      const { query: { page = 1, limit = 10 } } = req;
+      req.offset = ((page ? Number(page) : 1) - 1) * Number(limit);
+      req.limit = Number(limit);
+      return next();
+    } catch (error) {
+      serverConfig.DEBUG(`Error in system middleware format request query method: ${error}`);
+      next(error);
+    }
+  }
 }
 
 export default new SystemMiddlewares();
