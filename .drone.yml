@@ -45,7 +45,8 @@ steps:
         - cp /var/www/envs/vacms/.env.staging /var/www/webapps/vacms/vacmsapi/.env
         - pushd /var/www/webapps/vacms/vacmsapi
         - npm install
-        - npm test
+        - npm build
+        - npm start
     when:
       branch:
         - develop
