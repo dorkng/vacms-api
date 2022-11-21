@@ -45,7 +45,7 @@ steps:
       script:
         - cp /var/www/envs/vacms/.env.staging /var/www/webapps/vacms/vacmsapi/.env
         - pushd /var/www/webapps/vacms/vacmsapi
-        - npm start
+        - pm2 start 0
     when:
       branch:
         - develop
