@@ -15,7 +15,7 @@ steps:
     - npm install
 
   - name: deploy
-    image: drillster/drone-rsync
+    image: appleboy/drone-ssh
     settings:
       host:
         from_secret: SSH_HOST
