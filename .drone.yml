@@ -16,7 +16,7 @@ steps:
     - npm run build
 
   - name: deploy
-    image: appleboy/drone-ssc
+    image: appleboy/drone-scp
     settings:
       host:
         from_secret: SSH_HOST
