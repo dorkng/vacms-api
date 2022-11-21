@@ -30,7 +30,7 @@ class Routes {
     
     this.router.use(authMiddleware.validateUserToken);
 
-    this.router.use('/department', authMiddleware.validateSuperAdminAccess, departmentRoutes);
+    this.router.use('/department', departmentRoutes);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.router.use('*', (req: Request, res: Response) => {
