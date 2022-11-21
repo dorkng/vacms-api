@@ -13,7 +13,6 @@ steps:
     image: node:latest
     commands:
     - npm install
-    - npm build
 
   - name: deploy
     image: appleboy/drone-ssh
@@ -45,6 +44,7 @@ steps:
       script:
         - cp /var/www/envs/vacms/.env.staging /var/www/webapps/vacms/vacmsapi/.env
         - pushd /var/www/webapps/vacms/vacmsapi
+        - npm build
         - npm start
     when:
       branch:
