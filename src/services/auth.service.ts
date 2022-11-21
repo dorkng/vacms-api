@@ -17,7 +17,7 @@ class AuthService {
   }
 
   public async validateUser(email: string, password: string): Promise<User> {
-    const user = await this.UserModel.scope('withPassword').findOne({ 
+    const user = await this.UserModel.scope('withPassword').findOne({
       where: { email },
     });
     if (!user || !this.validatePassword(user, password)) {

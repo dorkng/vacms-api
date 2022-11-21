@@ -14,14 +14,14 @@ class DepartmentRoutes extends DepartmentController {
 
   private routes(): void {
     this.router.route('/')
-    .post(
-      authMiddleware.validateSuperAdminAccess, 
-      this.create,
-    )
-    .get(
-      systemMiddleware.formatRequestQuery,
-      this.index,
-    );
+      .post(
+        authMiddleware.validateSuperAdminAccess,
+        this.create,
+      )
+      .get(
+        systemMiddleware.formatRequestQuery,
+        this.index,
+      );
 
     this.router.get('/:id', this.get);
 
