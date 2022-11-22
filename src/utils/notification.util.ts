@@ -45,6 +45,21 @@ class NotificationUtil {
     };
     await notificationService.sendMail(options);
   }
+
+  public async sendForgotPasswordMail(user: User): Promise<void> {
+    const { id, email, firstName } = user;
+    const token = await userService.generateVerificationToken(id);
+    const options: IMailOptions = {
+      to: email,
+      subject: 'Reset my Password',
+      templateName: 'forgotPassword',
+      replacements: { 
+        email, firstName,
+        link: `${serverConfig.FRONTEND_BASE_URL}/reset-password?uid=${id}&token=${token}`,
+      },
+    };
+    await notificationService.sendMail(options);
+  }
 }
 
 export default new NotificationUtil();

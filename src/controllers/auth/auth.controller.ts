@@ -35,4 +35,17 @@ export default class AuthenticateController {
       next(error);
     }
   }
+
+  protected async forgotPassword(req: Request, res: Response, next: NextFunction): Promise<Response> {
+    try {
+      const { body: { email } } = req;
+      await authService.forgotPassword(email);
+      return res.status(200).json({
+        message: 'A link has been sent to your mail to reset your password.',
+      });
+    } catch (error) {
+      serverConfig.DEBUG(`Error in auth forgot password controller method: ${error}`);
+      next(error);
+    }
+  }
 }

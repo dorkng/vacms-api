@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { User } from '../db/models';
-import { ConflictError } from '../errors';
+import { ConflictError, NotFoundError } from '../errors';
 import serverConfig from '../config/sever.config';
 import { DecodedToken } from '../interfaces/auth.interface';
 import userService from './user.service';
@@ -56,6 +56,15 @@ class AuthService {
         expired: error.message.includes('expired') ? error.message : error,
       };
     }
+  }
+
+  public async forgotPassword(email: string): Promise<User> {
+    const user = await this.UserModel.findOne({
+      where: { email },
+    });
+    if (!user) throw new NotFoundError('A user with this email does not exist.');
+    await notificationUtil.sendForgotPasswordMail(user);
+    return user;
   }
 }
 
