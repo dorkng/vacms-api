@@ -24,6 +24,17 @@ class AuthMiddleware {
     }
   }
 
+  public validateSuperAdminAccess(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { user: { isAdmin } } = req;
+      if (!isAdmin) throw new ForbiddenError();
+      return next();
+    } catch (error) {
+      serverConfig.DEBUG(`Error in auth middleware validate super admin method: ${error}`);
+      next(error);
+    }
+  }
+
   public validateAccessLevel(validAccessLevels: AccessLevel[]) {
     return (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -34,19 +45,6 @@ class AuthMiddleware {
         return next();
       } catch (error) {
         serverConfig.DEBUG(`Error in auth middleware validate access level method: ${error}`);
-        next(error);
-      }
-    };
-  }
-
-  public validateSuperAdminAccess() {
-    return (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const { user: { isAdmin } } = req;
-        if (!isAdmin) throw new ForbiddenError();
-        return next();
-      } catch (error) {
-        serverConfig.DEBUG(`Error in auth middleware validate super admin method: ${error}`);
         next(error);
       }
     };

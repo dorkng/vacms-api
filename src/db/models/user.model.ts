@@ -82,15 +82,15 @@ export function init(connection: Sequelize) {
       hooks: {
         beforeCreate: async (user) => {
           if (user.password) {
-            const salt = bcrypt.genSaltSync(serverConfig.BCRYPT_SALT_ROUNDS);
-            user.password = bcrypt.hashSync(user.password, salt);
+            const salt = await bcrypt.genSalt(serverConfig.BCRYPT_SALT_ROUNDS);
+            user.password = await bcrypt.hash(user.password, salt);
           }
         },
         beforeUpdate: async (user) => {
           const changes = user.changed() as string[];
           if (user.changed() && changes.includes('password')) {
-            const salt = bcrypt.genSaltSync(serverConfig.BCRYPT_SALT_ROUNDS);
-            user.password = bcrypt.hashSync(user.password, salt);
+            const salt = await bcrypt.genSalt(serverConfig.BCRYPT_SALT_ROUNDS);
+            user.password = await bcrypt.hash(user.password, salt);
           }
         },
       },
