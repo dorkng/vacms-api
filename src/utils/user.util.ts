@@ -13,7 +13,7 @@ class UserUtil {
         accessLevel: Joi.string()
           .valid(
             ...[
-              'registerer',
+              'registrar',
               'lawyer',
               'director',
               'permanent-secretary',

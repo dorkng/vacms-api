@@ -34,7 +34,7 @@ export function init(connection: Sequelize) {
         unique: true,
       },
       accessLevel: {
-        type: DataTypes.ENUM('registerer', 'lawyer', 'director', 'permanent-secretary', 'attorney-general'),
+        type: DataTypes.ENUM('registrar', 'lawyer', 'director', 'permanent-secretary', 'attorney-general'),
         allowNull: false,
       },
       departmentId: {
