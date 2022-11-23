@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { User } from '../db/models';
 import { ConflictError, NotFoundError } from '../errors';
-import serverConfig from '../config/sever.config';
+import serverConfig from '../config/server.config';
 import { DecodedToken } from '../interfaces/auth.interface';
 import userService from './user.service';
 import notificationUtil from '../utils/notification.util';

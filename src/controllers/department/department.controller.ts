@@ -3,7 +3,7 @@ import {
   Response,
   NextFunction,
 } from 'express';
-import serverConfig from '../../config/sever.config';
+import serverConfig from '../../config/server.config';
 import departmentService from '../../services/department.service';
 
 export default class DepartmentController {

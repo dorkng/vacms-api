@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import serverConfig from '../config/sever.config';
+import serverConfig from '../config/server.config';
 import { BadRequestError, UnauthorizedError, ForbiddenError } from '../errors';
 import authService from '../services/auth.service';
 import userService from '../services/user.service';

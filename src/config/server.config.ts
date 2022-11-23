@@ -47,6 +47,8 @@ class ServerConfig {
   public FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL;
 
   public FILE_STORAGE_PATH = process.env.FILE_STORAGE_PATH;
+
+  public FILE_SIZE_LIMIT_IN_MB = Number(process.env.FILE_SIZE_LIMIT_IN_MB) * 1000000;
 }
 
 export default new ServerConfig();

@@ -3,7 +3,7 @@ import {
   Response,
   NextFunction,
 } from 'express';
-import serverConfig from '../../config/sever.config';
+import serverConfig from '../../config/server.config';
 import userService from '../../services/user.service';
 import notificationUtil from '../../utils/notification.util';
 

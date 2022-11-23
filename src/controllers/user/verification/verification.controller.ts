@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import serverConfig from '../../../config/sever.config';
+import serverConfig from '../../../config/server.config';
 import userService from '../../../services/user.service';
 import userUtil from '../../../utils/user.util';
 

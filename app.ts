@@ -5,7 +5,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import DB from './src/db';
 import routes from './src/routes';
-import serverConfig from './src/config/sever.config';
+import serverConfig from './src/config/server.config';
 import systemMiddleware from './src/middlewares/system.middleware';
 
 class Server {

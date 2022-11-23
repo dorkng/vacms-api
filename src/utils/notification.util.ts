@@ -2,7 +2,7 @@ import { User, UserVerification } from '../db/models';
 import userService from '../services/user.service';
 import notificationService from '../services/notification.service';
 import { IMailOptions, ISmsOptions } from '../interfaces/notification.interface';
-import serverConfig from '../config/sever.config';
+import serverConfig from '../config/server.config';
 
 class NotificationUtil {
   public async sendAccountCreationMail(user: User): Promise<void> {
