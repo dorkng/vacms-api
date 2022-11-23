@@ -36,12 +36,13 @@ class NotificationUtil {
 
   private async sendOtpMail(user: User, verification: UserVerification): Promise<void> {
     const { otp } = verification;
-    const { email, firstName } = user;
+    const { email, firstName, lastName } = user;
+    const fullName = `${firstName} ${lastName}`.toUpperCase();
     const options: IMailOptions = {
       to: email,
       subject: 'VACMS: 2-Step Verification',
       templateName: 'twoFactorVerification',
-      replacements: { email, firstName, otp },
+      replacements: { fullName, otp },
     };
     await notificationService.sendMail(options);
   }
