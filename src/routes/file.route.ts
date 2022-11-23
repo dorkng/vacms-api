@@ -14,7 +14,10 @@ class FileRoutes extends FileController {
   private routes(): void {
     this.router.use(fileService.fileUpload.single('file'));
 
-    this.router.route('/').post(this.create);
+    this.router.route('/')
+      .post(this.create)
+      .get(this.get)
+      .delete(this.delete);
   }
 }
 
