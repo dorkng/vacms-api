@@ -45,6 +45,8 @@ class ServerConfig {
   public EMAIL_SENDER = process.env.EMAIL_SENDER;
 
   public FRONTEND_BASE_URL = process.env.FRONTEND_BASE_URL;
+
+  public FILE_STORAGE_PATH = process.env.FILE_STORAGE_PATH;
 }
 
 export default new ServerConfig();
