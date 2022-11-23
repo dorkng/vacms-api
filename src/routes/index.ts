@@ -4,6 +4,7 @@ import authMiddleware from '../middlewares/auth.middleware';
 import authRoutes from './auth.route';
 import departmentRoutes from './department.route';
 import userRoutes from './user.route';
+import fileRoutes from './file.route';
 
 class Routes {
   public router: Router;
@@ -29,6 +30,8 @@ class Routes {
     this.router.use('/user', userRoutes);
     
     this.router.use(authMiddleware.validateUserToken);
+
+    this.router.use('/file', fileRoutes);
 
     this.router.use('/department', departmentRoutes);
 
