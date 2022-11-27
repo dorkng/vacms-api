@@ -1,6 +1,6 @@
 import { Department } from '../db/models';
-import departmentUtil from '../utils/department.util';
 import { NotFoundError } from '../errors';
+import departmentUtil from '../utils/department.util';
 
 class DepartmentService {
   private DepartmentModel = Department;
