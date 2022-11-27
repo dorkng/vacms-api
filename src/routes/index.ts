@@ -5,6 +5,7 @@ import authRoutes from './auth.route';
 import departmentRoutes from './department.route';
 import userRoutes from './user.route';
 import fileRoutes from './file.route';
+import courtRoutes from './court.route';
 
 class Routes {
   public router: Router;
@@ -34,6 +35,8 @@ class Routes {
     this.router.use('/file', fileRoutes);
 
     this.router.use('/department', departmentRoutes);
+
+    this.router.use('/court', courtRoutes);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.router.use('*', (req: Request, res: Response) => {
