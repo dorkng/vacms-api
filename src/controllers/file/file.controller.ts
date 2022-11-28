@@ -11,7 +11,7 @@ export default class FileController {
   protected async create(req: Request, res: Response, next: NextFunction): Promise<Response> {
     try {
       const { file } = req;
-      if (!file) throw new BadRequestError('No file uploaded.');
+      if (!file) throw new BadRequestError('No file attached.');
       return res.status(201).json({
         message: 'File uploaded successfully.',
         data: { path: file.path },
