@@ -5,6 +5,7 @@ import {
 } from 'express';
 import serverConfig from '../../../config/server.config';
 import courtService from '../../../services/court.service';
+import helperUtil from '../../../utils/helper.util';
 
 export default class CourtTypeController {
   protected async create(req: Request, res: Response, next: NextFunction): Promise<Response> {
@@ -23,11 +24,12 @@ export default class CourtTypeController {
 
   protected async index(req: Request, res: Response, next: NextFunction): Promise<Response> {
     try {
-      const { limit, offset } = req;
+      const { limit, offset, page } = req;
       const courtTypes = await courtService.getAllTypes(limit, offset);
+      const paginationData = helperUtil.getPaginationData(limit, page, courtTypes.totalCount);
       return res.status(200).json({
         message: 'Court types retrieved successfully.',
-        data: courtTypes,
+        data: { ...courtTypes, ...paginationData },
       });
     } catch (error) {
       serverConfig.DEBUG(`Error in court type index controller method: ${error}`);

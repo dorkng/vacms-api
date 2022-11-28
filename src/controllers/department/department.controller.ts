@@ -5,6 +5,7 @@ import {
 } from 'express';
 import serverConfig from '../../config/server.config';
 import departmentService from '../../services/department.service';
+import helperUtil from '../../utils/helper.util';
 
 export default class DepartmentController {
   protected async create(req: Request, res: Response, next: NextFunction): Promise<Response> {
@@ -23,11 +24,13 @@ export default class DepartmentController {
 
   protected async index(req: Request, res: Response, next: NextFunction): Promise<Response> {
     try {
-      const { limit, offset } = req;
+      const { limit, offset, page } = req;
       const departments = await departmentService.getAll(limit, offset);
+      const paginationData = helperUtil.getPaginationData(limit, page, departments.totalCount);
+      console.log(paginationData);
       return res.status(200).json({
         message: 'Departments retrieved successfully.',
-        data: departments,
+        data: { ...departments, ...paginationData },
       });
     } catch (error) {
       serverConfig.DEBUG(`Error in department index controller method: ${error}`);

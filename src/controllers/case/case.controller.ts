@@ -5,6 +5,7 @@ import {
 } from 'express';
 import serverConfig from '../../config/server.config';
 import caseService from '../../services/case.service';
+import helperUtil from '../../utils/helper.util';
 
 export default class CaseController {
   protected async create(req: Request, res: Response, next: NextFunction): Promise<Response> {
@@ -23,11 +24,12 @@ export default class CaseController {
 
   protected async index(req: Request, res: Response, next: NextFunction): Promise<Response> {
     try {
-      const { limit, offset } = req;
+      const { limit, offset, page } = req;
       const cases = await caseService.getAll(limit, offset);
+      const paginationData = helperUtil.getPaginationData(limit, page, cases.totalCount);
       return res.status(200).json({
         message: 'Cases retrieved successfully.',
-        data: cases,
+        data: { ...cases, ...paginationData },
       });
     } catch (error) {
       serverConfig.DEBUG(`Error in case index controller method: ${error}`);
