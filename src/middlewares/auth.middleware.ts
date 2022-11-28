@@ -38,8 +38,8 @@ class AuthMiddleware {
   public validateAccessLevel(validAccessLevels: AccessLevel[]) {
     return (req: Request, res: Response, next: NextFunction) => {
       try {
-        const { user: { access: { accessLevel } } } = req;
-        if (!validAccessLevels.includes(accessLevel)) {
+        const { user: { isAdmin, access: { accessLevel } } } = req;
+        if (!isAdmin || !validAccessLevels.includes(accessLevel)) {
           throw new ForbiddenError();
         }
         return next();
