@@ -5,5 +5,6 @@ declare module 'express' {
     user: User;
     limit: number;
     offset: number;
+    page: number;
   }
 }
