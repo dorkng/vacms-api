@@ -3,9 +3,10 @@ import { NotFoundError } from '../errors';
 import authMiddleware from '../middlewares/auth.middleware';
 import authRoutes from './auth.route';
 import departmentRoutes from './department.route';
+import courtRoutes from './court.route';
 import userRoutes from './user.route';
 import fileRoutes from './file.route';
-import courtRoutes from './court.route';
+import caseRoutes from './case.route';
 
 class Routes {
   public router: Router;
@@ -37,6 +38,8 @@ class Routes {
     this.router.use('/department', departmentRoutes);
 
     this.router.use('/court', courtRoutes);
+
+    this.router.use('/case', caseRoutes);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.router.use('*', (req: Request, res: Response) => {
