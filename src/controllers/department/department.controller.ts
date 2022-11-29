@@ -27,7 +27,6 @@ export default class DepartmentController {
       const { limit, offset, page } = req;
       const departments = await departmentService.getAll(limit, offset);
       const paginationData = helperUtil.getPaginationData(limit, page, departments.totalCount);
-      console.log(paginationData);
       return res.status(200).json({
         message: 'Departments retrieved successfully.',
         data: { ...departments, ...paginationData },
