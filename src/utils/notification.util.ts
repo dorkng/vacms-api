@@ -29,7 +29,7 @@ class NotificationUtil {
     const { otp } = verification;
     const [countryCode, number] = user.phoneNumber.split('-');
     const to = `${countryCode.trim()}${number.trim()}`;
-    const body = `Please use this One-Time Password (OTP) ${otp} to complete your VACMS authentication. This otp expires in five minutes.`;
+    const body = `Your One Time Password (OTP) to complete your login to the VACMS is ${otp}. Kindly complete the login process with this token. Please note that the OTP expires in 5 minutes.`;
     const options: ISmsOptions = { to, body };
     await notificationService.sendSms(options);
   }
