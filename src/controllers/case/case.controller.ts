@@ -24,8 +24,9 @@ export default class CaseController {
 
   protected async index(req: Request, res: Response, next: NextFunction): Promise<Response> {
     try {
-      const { limit, offset, page } = req;
-      const cases = await caseService.getAll(limit, offset);
+      const { limit, offset, page, query: { status, search } } = req;
+      const opts = { limit, offset, status: status as string, search: search as string }; 
+      const cases = await caseService.getAll(opts);
       const paginationData = helperUtil.getPaginationData(limit, page, cases.totalCount);
       return res.status(200).json({
         message: 'Cases retrieved successfully.',

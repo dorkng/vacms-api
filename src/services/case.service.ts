@@ -1,7 +1,9 @@
+import { Op, WhereOptions, InferAttributes } from 'sequelize';
 import { Case, CaseAdjournment, CaseVerdict, CaseNote, CaseFile, Court } from '../db/models';
 import { ConflictError, NotFoundError } from '../errors';
 import caseUtil from '../utils/case.util';
 import courtService from './court.service';
+import { QueryOptions } from '../interfaces/functions.interface';
 
 class CaseService {
   private CaseModel = Case;
@@ -69,8 +71,21 @@ class CaseService {
     return oldCase;
   }
 
-  public async getAll(limit: number, offset: number): Promise<{ result: Case[]; totalCount: number; }> {
+  public async getAll(opts: QueryOptions): Promise<{ result: Case[]; totalCount: number; }> {
+    const { limit, offset, status, search } = opts;
+    const where: WhereOptions<InferAttributes<Case, { omit: never; }>> = {
+      [Op.or]: {
+        suitNumber: { [Op.like]: search ? `%${search}%` : '%' },
+        initiatingParties: { [Op.like]: search ? `%${search}%` : '%' },
+        respondingParties: { [Op.like]: search ? `%${search}%` : '%' },
+        presidingJudge: { [Op.like]: search ? `%${search}%` : '%' },
+        originatingOrganisation: { [Op.like]: search ? `%${search}%` : '%' },
+      },
+    };
+    // eslint-disable-next-line @typescript-eslint/dot-notation, @typescript-eslint/no-unused-expressions
+    status ? (where['status'] = status) : where;
     const { rows, count } = await this.CaseModel.findAndCountAll({
+      where: where,
       include: [
         {
           model: Court,
