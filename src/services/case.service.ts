@@ -95,6 +95,7 @@ class CaseService {
       ],
       limit: limit,
       offset: offset,
+      order: [['createdAt', 'DESC']],
     });
     return { result: rows, totalCount: count };
   }
