@@ -4,6 +4,7 @@ import { User, UserAccess, UserVerification } from '../db/models';
 import { NotFoundError, ConflictError } from '../errors';
 import userUtil from '../utils/user.util';
 import authService from './auth.service';
+import { QueryOptions } from '../interfaces/functions.interface';
 
 class UserService {
   private UserModel = User;
@@ -37,6 +38,22 @@ class UserService {
     });
     if (!user) throw new NotFoundError('User not found.');
     return user;
+  }
+
+  public async getAll(opts: QueryOptions): Promise<{ result: User[], totalCount: number }> {
+    const { limit, offset, accessLevel } = opts;
+    const { rows: result, count: totalCount } = await this.UserModel.findAndCountAll({
+      include: [
+        {
+          model: UserAccess,
+          as: 'access',
+          where: { accessLevel },
+        },
+      ],
+      limit: limit,
+      offset: offset,
+    });
+    return { result, totalCount };
   }
 
   private async validateEmail(email: string): Promise<User> {
