@@ -3,4 +3,5 @@ export interface QueryOptions {
   offset: number;
   status?: string;
   search?: string;
+  accessLevel?: string;
 }
