@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/dot-notation */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { Op, WhereOptions, InferAttributes } from 'sequelize';
 import { Case, CaseAdjournment, CaseVerdict, CaseNote, CaseFile, Court } from '../db/models';
 import { ConflictError, NotFoundError } from '../errors';
@@ -72,7 +74,7 @@ class CaseService {
   }
 
   public async getAll(opts: QueryOptions): Promise<{ result: Case[]; totalCount: number; }> {
-    const { limit, offset, status, search } = opts;
+    const { limit, offset, status, type, search } = opts;
     const where: WhereOptions<InferAttributes<Case, { omit: never; }>> = {
       [Op.or]: {
         suitNumber: { [Op.like]: search ? `%${search}%` : '%' },
@@ -82,8 +84,8 @@ class CaseService {
         originatingOrganisation: { [Op.like]: search ? `%${search}%` : '%' },
       },
     };
-    // eslint-disable-next-line @typescript-eslint/dot-notation, @typescript-eslint/no-unused-expressions
     status ? (where['status'] = status) : where;
+    type ? (where['type'] = type) : where;
     const { rows, count } = await this.CaseModel.findAndCountAll({
       where: where,
       include: [
