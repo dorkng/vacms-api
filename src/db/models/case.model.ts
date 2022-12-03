@@ -48,11 +48,11 @@ export function init(connection: Sequelize) {
         unique: true,
       },
       initiatingParties: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT('long'),
         allowNull: false,
       },
       respondingParties: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT('long'),
         allowNull: false,
       },
       type: {

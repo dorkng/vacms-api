@@ -54,4 +54,18 @@ export default class CaseController {
       next(error);
     }
   }
+
+  protected async update(req: Request, res: Response, next: NextFunction): Promise<Response> {
+    try {
+      const { params: { id }, body: data } = req;
+      const result = await caseService.update(Number(id), data);
+      return res.status(200).json({
+        message: 'Case updated successfully.',
+        data: result,
+      });
+    } catch (error) {
+      serverConfig.DEBUG(`Error in case update controller method: ${error}`);
+      next(error);
+    }
+  }
 }

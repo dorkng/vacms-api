@@ -1,6 +1,8 @@
+import fs from 'fs';
 import { Request } from 'express';
 import multer, { FileFilterCallback } from 'multer';
 import serverConfig from '../config/server.config';
+import { BadRequestError, NotFoundError } from '../errors';
 
 type DestinationCallback = (error: Error | null, destination: string) => void;
 type FileNameCallback = (error: Error | null, filename: string) => void;
@@ -32,6 +34,24 @@ class FileService {
     fileFilter: this.fileFilter,
     limits : { fileSize: serverConfig.FILE_SIZE_LIMIT_IN_MB },
   });
+
+  public create(file: Express.Multer.File): string {
+    if (!file) throw new BadRequestError('No file attached.');
+    const { path } = file;
+    return path;
+  }
+
+  public get(path: string): string {
+    if (!path) throw new BadRequestError('No file specified.');
+    if (!fs.existsSync(path)) throw new NotFoundError('File not found.');
+    return path;
+  }
+
+  public delete(path: string): void {
+    if (!path) throw new BadRequestError('No file specified.');
+    if (!fs.existsSync(path)) throw new NotFoundError('File not found.');
+    fs.unlinkSync(path);
+  }
 }
 
 export default new FileService();

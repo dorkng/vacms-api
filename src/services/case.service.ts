@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { Op, WhereOptions, InferAttributes } from 'sequelize';
-import { Case, CaseAdjournment, CaseVerdict, CaseNote, CaseReport, CaseFile, Court } from '../db/models';
+import { Case, CaseAdjournment, CaseVerdict, CaseNote, CaseReport, CaseDocument, Court } from '../db/models';
 import { ConflictError, NotFoundError } from '../errors';
 import caseUtil from '../utils/case.util';
 import courtService from './court.service';
+import fileService from './file.service';
+import { CaseStatus } from '../interfaces/case.interface';
 import { QueryOptions } from '../interfaces/functions.interface';
 
 class CaseService {
@@ -18,6 +20,8 @@ class CaseService {
 
   private CaseNoteModel = CaseNote;
 
+  private CaseDocumentModel = CaseDocument;
+
   public async create(data: unknown): Promise<Case> {
     const attributes = await caseUtil.caseCreationSchema.validateAsync(data);
     const { suitNumber, courtId, parentCaseId } = attributes;
@@ -29,12 +33,25 @@ class CaseService {
     const newCase = await this.CaseModel.create(attributes, {
       include: [
         { 
-          model: CaseFile,
-          as: 'files',
+          model: CaseDocument,
+          as: 'documents',
         },
       ],
     });
     return newCase;
+  }
+
+  public async update(id: number, data: unknown): Promise<Case> {
+    const retrievedCase = await this.getById(id);
+    const attributes = await caseUtil.caseUpdateSchema.validateAsync(data);
+    const { suitNumber, courtId, parentCaseId } = attributes;
+    if (retrievedCase.suitNumber !== suitNumber) {
+      await this.checkSuitNumber(suitNumber);
+    }
+    await courtService.get(courtId);
+    if (parentCaseId) await this.get(parentCaseId);
+    await retrievedCase.update(attributes);
+    return retrievedCase.reload();
   }
 
   private async checkSuitNumber(suitNumber: string): Promise<Case> {
@@ -53,7 +70,7 @@ class CaseService {
           as: 'court',
           include: ['type', 'address'],
         },
-        'files',
+        'documents',
         'adjournments',
         'reports',
         {
@@ -124,7 +141,12 @@ class CaseService {
     const { caseId } = attributes;
     await this.getById(caseId);
     const caseVerdict = await this.CaseVerdictModel.create(attributes);
+    await this.updateCaseStatus(caseId, CaseStatus['verdict/judgement-passed']);
     return caseVerdict;
+  }
+
+  private async updateCaseStatus(id: number, status: CaseStatus): Promise<void> {
+    await this.CaseModel.update({ status }, { where: { id } });
   }
 
   public async createNote(data: unknown): Promise<CaseNote> {
@@ -141,6 +163,22 @@ class CaseService {
     await this.getById(caseId);
     const caseReport = await this.CaseReportModel.create(attributes);
     return caseReport;
+  }
+
+  public async createDocument(data: unknown): Promise<CaseDocument> {
+    const attributes = await caseUtil.caseDocumentCreationSchema.validateAsync(data);
+    const { caseId } = attributes;
+    await this.getById(caseId);
+    const caseDocument = await this.CaseDocumentModel.create(attributes);
+    return caseDocument;
+  }
+
+  public async deleteDocument(id: number): Promise<CaseDocument> {
+    const caseDocument = await this.CaseDocumentModel.findByPk(id);
+    if (!caseDocument) throw new NotFoundError('Case document not found.');
+    await caseDocument.destroy();
+    fileService.delete(caseDocument.path);
+    return caseDocument;
   }
 }
 

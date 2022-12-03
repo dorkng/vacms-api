@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import {
-  CaseAdjournmentController, CaseNoteController, CaseReportController,
-  CaseVerdictController, CaseController,
+  CaseAdjournmentController, CaseDocumentController, CaseNoteController, 
+  CaseReportController, CaseVerdictController, CaseController,
 } from '../controllers/case';
 import systemMiddleware from '../middlewares/system.middleware';
+import fileService from '../services/file.service';
 
 class CaseAdjournmentRoutes extends CaseAdjournmentController {
   public router: Router;
@@ -19,7 +20,26 @@ class CaseAdjournmentRoutes extends CaseAdjournmentController {
   }
 }
 
-class CaseReportRoutes extends CaseReportController {
+class CaseDocumentRoutes extends CaseDocumentController {
+  public router: Router;
+
+  constructor() {
+    super();
+    this.router = Router();
+    this.routes();
+  }
+
+  private routes(): void {
+    this.router.route('/')
+      .post(
+        fileService.fileUpload.single('file'),
+        this.create,
+      );
+    this.router.delete('/:id', this.delete);
+  }
+}
+
+class CaseNoteRoutes extends CaseNoteController {
   public router: Router;
 
   constructor() {
@@ -33,7 +53,7 @@ class CaseReportRoutes extends CaseReportController {
   }
 }
 
-class CaseNoteRoutes extends CaseNoteController {
+class CaseReportRoutes extends CaseReportController {
   public router: Router;
 
   constructor() {
@@ -73,6 +93,8 @@ class CaseRoutes extends CaseController {
   private routes(): void {
     this.router.use('/adjournment', new CaseAdjournmentRoutes().router);
 
+    this.router.use('/document', new CaseDocumentRoutes().router);
+
     this.router.use('/note', new CaseNoteRoutes().router);
 
     this.router.use('/report', new CaseReportRoutes().router);
@@ -86,7 +108,9 @@ class CaseRoutes extends CaseController {
         this.index,
       );
 
-    this.router.get('/:id', this.get);
+    this.router.route('/:id')
+      .get(this.get)
+      .put(this.update);
   }
 }
 

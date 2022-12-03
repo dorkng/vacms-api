@@ -6,22 +6,22 @@ import {
   Model,
   Sequelize,
 } from 'sequelize';
-import { ICaseFileAttribute, CaseFileType } from '../../interfaces/case.interface';
+import { ICaseDocumentAttribute, CaseDocumentType } from '../../interfaces/case.interface';
 
-class CaseFile
-  extends Model<InferAttributes<CaseFile>, InferCreationAttributes<CaseFile>>
-  implements ICaseFileAttribute {
+class CaseDocument
+  extends Model<InferAttributes<CaseDocument>, InferCreationAttributes<CaseDocument>>
+  implements ICaseDocumentAttribute {
   declare id: CreationOptional<number>;
 
   declare caseId: number;
 
-  declare type: CaseFileType;
+  declare type: CaseDocumentType;
 
   declare path: string;
 }
 
 export function init(connection: Sequelize) {
-  CaseFile.init(
+  CaseDocument.init(
     {
       id: {
         type: DataTypes.INTEGER.UNSIGNED,
@@ -33,7 +33,7 @@ export function init(connection: Sequelize) {
         allowNull: false,
       },
       type: {
-        type: DataTypes.ENUM(...Object.values(CaseFileType)),
+        type: DataTypes.ENUM(...Object.values(CaseDocumentType)),
         allowNull: false,
       },
       path: {
@@ -42,11 +42,11 @@ export function init(connection: Sequelize) {
       },
     },
     {
-      tableName: 'case_files',
+      tableName: 'case_documents',
       timestamps: true,
       sequelize: connection,
     },
   );
 }
 
-export default CaseFile;
+export default CaseDocument;

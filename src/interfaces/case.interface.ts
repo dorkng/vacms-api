@@ -26,16 +26,16 @@ export interface ICaseAttribute {
   remarks?: string;
 }
 
-export enum CaseFileType {
+export enum CaseDocumentType {
   'cover-letter' = 'cover-letter',
   'case-file' = 'case-file',
   'supporting-documents' = 'supporting-documents',
 }
 
-export interface ICaseFileAttribute {
+export interface ICaseDocumentAttribute {
   id: number;
   caseId: number;
-  type: CaseFileType;
+  type: CaseDocumentType;
   path: string;
 }
 

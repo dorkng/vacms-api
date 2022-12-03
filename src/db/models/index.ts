@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize/types';
 import Case, { init as initCase } from './case.model';
 import CaseAdjournment, { init as initCaseAdjournment } from './caseAdjournment.model';
-import CaseFile, { init as initCaseFile } from './caseFile.model';
+import CaseDocument, { init as initCaseDocument } from './caseDocument.model';
 import CaseNote, { init as initCaseNote } from './caseNote.model';
 import CaseReport, { init as initCaseReport } from './caseReport.model';
 import CaseVerdict, { init as initCaseVerdict } from './caseVerdict.model';
@@ -39,13 +39,13 @@ function associate() {
     },
     as: 'adjournments',
   });
-  Case.hasMany(CaseFile, {
+  Case.hasMany(CaseDocument, {
     foreignKey: {
       allowNull: false,
       name: 'caseId',
       field: 'caseId',
     },
-    as: 'files',
+    as: 'documents',
   });
   Case.hasMany(CaseReport, {
     foreignKey: {
@@ -80,8 +80,8 @@ function associate() {
     },
     as: 'case',
   });
-  // Case File Relationships
-  CaseFile.belongsTo(Case, {
+  // Case Document Relationships
+  CaseDocument.belongsTo(Case, {
     foreignKey: {
       allowNull: false,
       name: 'caseId',
@@ -162,14 +162,14 @@ function associate() {
 }
 
 export { 
-  Case, CaseAdjournment, CaseFile, CaseNote, CaseReport, CaseVerdict, Court,
+  Case, CaseAdjournment, CaseDocument, CaseNote, CaseReport, CaseVerdict, Court,
   CourtAddress, CourtType, Department, User, UserAccess, UserVerification,
 };
 
 export function init(connection: Sequelize) {
   initCase(connection);
   initCaseAdjournment(connection);
-  initCaseFile(connection);
+  initCaseDocument(connection);
   initCaseNote(connection);
   initCaseReport(connection);
   initCaseVerdict(connection);
