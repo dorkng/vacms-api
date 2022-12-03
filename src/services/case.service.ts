@@ -206,19 +206,20 @@ class CaseService {
     if (
       [
         'registrar', 'lawyer', 'director',
-        'permanent-secretary', 'attorney-general',
-      ].includes(accessLevel || null) || isAdmin
+        'permanent-secretary',
+      ].includes(accessLevel) || isAdmin
     ) {
       const allCase = await this.getAllCaseStats();
       const activeCase = await this.getActiveCaseStats();
       const caseDistributionByDepartment = await this.getCaseDistributionByDepartmentStats();
+      statistics.push({ allCase, activeCase, caseDistributionByDepartment });
+    }
+
+    if ([ 'attorney-general'].includes(accessLevel) || isAdmin) {
       const civilCase = await this.getCaseStatsByType(CaseType.civil);
       const appealCase = await this.getCaseStatsByType(CaseType.appeal);
       const criminalCase = await this.getCaseStatsByType(CaseType.criminal);
-      statistics.push({ 
-        allCase, activeCase, caseDistributionByDepartment,
-        civilCase, appealCase, criminalCase,
-      });
+      statistics.push({ civilCase, appealCase, criminalCase });
     }
     return statistics[0];
   }
