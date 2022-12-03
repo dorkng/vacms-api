@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { Op, WhereOptions, InferAttributes } from 'sequelize';
-import { Case, CaseAdjournment, CaseVerdict, CaseNote, CaseFile, Court } from '../db/models';
+import { Case, CaseAdjournment, CaseVerdict, CaseNote, CaseReport, CaseFile, Court } from '../db/models';
 import { ConflictError, NotFoundError } from '../errors';
 import caseUtil from '../utils/case.util';
 import courtService from './court.service';
@@ -14,6 +14,8 @@ class CaseService {
 
   private CaseVerdictModel = CaseVerdict;
   
+  private CaseReportModel = CaseReport;
+
   private CaseNoteModel = CaseNote;
 
   public async create(data: unknown): Promise<Case> {
@@ -44,7 +46,7 @@ class CaseService {
   }
 
   public async get(id: number): Promise<Case> {
-    const oldCase = await this.CaseModel.findByPk(id, {
+    const retrievedCase = await this.CaseModel.findByPk(id, {
       include: [
         {
           model: Court,
@@ -53,6 +55,7 @@ class CaseService {
         },
         'files',
         'adjournments',
+        'reports',
         {
           model: Case,
           as: 'interlocutories',
@@ -69,8 +72,8 @@ class CaseService {
         'notes',
       ],
     });
-    if (!oldCase) throw new NotFoundError('Case not found.');
-    return oldCase;
+    if (!retrievedCase) throw new NotFoundError('Case not found.');
+    return retrievedCase;
   }
 
   public async getAll(opts: QueryOptions): Promise<{ result: Case[]; totalCount: number; }> {
@@ -124,12 +127,20 @@ class CaseService {
     return caseVerdict;
   }
 
-  public async createNote(data: unknown) : Promise<CaseNote> {
+  public async createNote(data: unknown): Promise<CaseNote> {
     const attributes = await caseUtil.caseNoteCreationSchema.validateAsync(data);
     const { caseId } = attributes;
     await this.getById(caseId);
     const caseNote = await this.CaseNoteModel.create(attributes);
     return caseNote;
+  }
+
+  public async createReport(data: unknown): Promise<CaseReport> {
+    const attributes = await caseUtil.caseReportCreationSchema.validateAsync(data);
+    const { caseId } = attributes;
+    await this.getById(caseId);
+    const caseReport = await this.CaseReportModel.create(attributes);
+    return caseReport;
   }
 }
 

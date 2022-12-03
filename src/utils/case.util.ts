@@ -1,7 +1,6 @@
 import Joi from 'joi';
 import { 
-  CaseType, CaseStatus, CaseFileType, CaseAdjournmentStatus,
-  CaseVerdictType, CaseVerdictStatus,
+  CaseType, CaseStatus, CaseFileType,
 } from '../interfaces/case.interface';
 
 class CaseUtil {
@@ -15,6 +14,7 @@ class CaseUtil {
     presidingJudge: Joi.string().optional().label('Presiding Judge'),
     originatingOrganisation: Joi.string().optional().label('Originating Organisation'),
     parentCaseId: Joi.number().optional().label('Parent Case'),
+    remarks: Joi.string().optional().label('Remarks'),
     files: Joi.array().items(
       Joi.object().keys({
         type: Joi.string().required().valid(...Object.values(CaseFileType)).label('File Type'),
@@ -25,17 +25,18 @@ class CaseUtil {
 
   public caseAdjournmentCreationSchema = Joi.object().keys({
     caseId: Joi.number().required().label('Case'),
-    date: Joi.date().required().label('Adjournment Date'),
     dateAdjournedTo: Joi.date().required().label('Date Adjourned To'),
-    status: Joi.string().required().valid(...Object.values(CaseAdjournmentStatus)).label('Adjournment Status'),
     reason: Joi.string().required().label('Adjournment Reason'),
   });
 
   public caseVerdictCreationSchema = Joi.object().keys({
     caseId: Joi.number().required().label('Case'),
-    type: Joi.string().required().valid(...Object.values(CaseVerdictType)).label('Verdict Type'),
-    status: Joi.string().required().valid(...Object.values(CaseVerdictStatus)).label('Verdict Status'),
-    judge: Joi.string().required().label('Judge'),
+    path: Joi.string().required().label('Verdict'),
+  });
+
+  public caseReportCreationSchema = Joi.object().keys({
+    caseId: Joi.number().required().label('Case'),
+    content: Joi.string().required().label('Content'),
   });
   
   public caseNoteCreationSchema = Joi.object().keys({

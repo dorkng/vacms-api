@@ -30,6 +30,8 @@ class Case
   declare originatingOrganisation?: string;
 
   declare parentCaseId?: number;
+
+  declare remarks?: string;
 }
 
 export function init(connection: Sequelize) {
@@ -75,6 +77,10 @@ export function init(connection: Sequelize) {
       },
       parentCaseId: {
         type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: true,
+      },
+      remarks: {
+        type: DataTypes.STRING,
         allowNull: true,
       },
     },

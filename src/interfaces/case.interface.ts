@@ -23,6 +23,7 @@ export interface ICaseAttribute {
   presidingJudge?: string;
   originatingOrganisation?: string;
   parentCaseId?: number;
+  remarks?: string;
 }
 
 export enum CaseFileType {
@@ -38,37 +39,23 @@ export interface ICaseFileAttribute {
   path: string;
 }
 
-export enum CaseAdjournmentStatus {
-  pending = 'pending',
-  held = 'sitting-held',
-  cancelled = 'sitting-cancelled',
-}
-
 export interface ICaseAdjournmentAttribute {
   id: number;
   caseId: number;
-  date: Date;
   dateAdjournedTo: Date;
-  status: CaseAdjournmentStatus;
   reason: string;
 }
 
-export enum CaseVerdictStatus {
-  passed = 'passed',
-  'struck-out' = 'struck-out',
-}
-
-export enum CaseVerdictType {
-  main = 'substantive/main-suit',
-  interlocutory = 'interlocutory',
+export interface ICaseReportAttribute {
+  id: number;
+  caseId: number;
+  content: string;
 }
 
 export interface ICaseVerdictAttribute {
   id: number;
   caseId: number;
-  type: CaseVerdictType;
-  status: CaseVerdictStatus;
-  judge: string;
+  path: string;
 }
 
 export interface ICaseNoteAttribute {

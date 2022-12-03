@@ -45,7 +45,7 @@ export function init(connection: Sequelize) {
         allowNull: false,
       },
       content: {
-        type: DataTypes.TEXT,
+        type: DataTypes.TEXT('long'),
         allowNull: false,
       },
       date: {

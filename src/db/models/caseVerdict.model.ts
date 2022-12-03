@@ -6,7 +6,7 @@ import {
   Model,
   Sequelize,
 } from 'sequelize';
-import { ICaseVerdictAttribute, CaseVerdictType,  CaseVerdictStatus } from '../../interfaces/case.interface';
+import { ICaseVerdictAttribute } from '../../interfaces/case.interface';
 
 class CaseVerdict
   extends Model<InferAttributes<CaseVerdict>, InferCreationAttributes<CaseVerdict>>
@@ -15,11 +15,7 @@ class CaseVerdict
 
   declare caseId: number;
 
-  declare type: CaseVerdictType;
-
-  declare status: CaseVerdictStatus;
-
-  declare judge: string;
+  declare path: string;
 }
 
 export function init(connection: Sequelize) {
@@ -34,15 +30,7 @@ export function init(connection: Sequelize) {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
       },
-      type: {
-        type: DataTypes.ENUM(...Object.values(CaseVerdictType)),
-        allowNull: false,
-      },
-      status: {
-        type: DataTypes.ENUM(...Object.values(CaseVerdictStatus)),
-        allowNull: false,
-      },
-      judge: {
+      path: {
         type: DataTypes.STRING,
         allowNull: false,
       },

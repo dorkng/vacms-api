@@ -6,22 +6,20 @@ import {
   Model,
   Sequelize,
 } from 'sequelize';
-import { ICaseAdjournmentAttribute } from '../../interfaces/case.interface';
+import { ICaseReportAttribute } from '../../interfaces/case.interface';
 
-class CaseAdjournment
-  extends Model<InferAttributes<CaseAdjournment>, InferCreationAttributes<CaseAdjournment>>
-  implements ICaseAdjournmentAttribute {
+class CaseReport
+  extends Model<InferAttributes<CaseReport>, InferCreationAttributes<CaseReport>>
+  implements ICaseReportAttribute {
   declare id: CreationOptional<number>;
 
   declare caseId: number;
 
-  declare dateAdjournedTo: Date;
-
-  declare reason: string;
+  declare content: string;
 }
 
 export function init(connection: Sequelize) {
-  CaseAdjournment.init(
+  CaseReport.init(
     {
       id: {
         type: DataTypes.INTEGER.UNSIGNED,
@@ -32,21 +30,17 @@ export function init(connection: Sequelize) {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
       },
-      dateAdjournedTo: {
-        type: DataTypes.DATE,
-        allowNull: false,
-      },
-      reason: {
+      content: {
         type: DataTypes.TEXT('long'),
         allowNull: false,
       },
     },
     {
-      tableName: 'case_adjournments',
+      tableName: 'case_reports',
       timestamps: true,
       sequelize: connection,
     },
   );
 }
 
-export default CaseAdjournment;
+export default CaseReport;

@@ -1,11 +1,25 @@
 import { Router } from 'express';
 import {
-  CaseAdjournmentController, CaseNoteController, CaseVerdictController,
-  CaseController,
+  CaseAdjournmentController, CaseNoteController, CaseReportController,
+  CaseVerdictController, CaseController,
 } from '../controllers/case';
 import systemMiddleware from '../middlewares/system.middleware';
 
 class CaseAdjournmentRoutes extends CaseAdjournmentController {
+  public router: Router;
+
+  constructor() {
+    super();
+    this.router = Router();
+    this.routes();
+  }
+
+  private routes(): void {
+    this.router.route('/').post(this.create);
+  }
+}
+
+class CaseReportRoutes extends CaseReportController {
   public router: Router;
 
   constructor() {
@@ -60,6 +74,8 @@ class CaseRoutes extends CaseController {
     this.router.use('/adjournment', new CaseAdjournmentRoutes().router);
 
     this.router.use('/note', new CaseNoteRoutes().router);
+
+    this.router.use('/report', new CaseReportRoutes().router);
 
     this.router.use('/verdict', new CaseVerdictRoutes().router);
 
