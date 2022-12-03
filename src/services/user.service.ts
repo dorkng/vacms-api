@@ -40,14 +40,27 @@ class UserService {
     return user;
   }
 
+  public async getById(id: number): Promise<User> {
+    const user = await this.UserModel.findByPk(id);
+    if (!user) throw new NotFoundError('User not found.');
+    return user;
+  }
+
   public async getAll(opts: QueryOptions): Promise<{ result: User[], totalCount: number }> {
-    const { limit, offset, accessLevel } = opts;
+    const { limit, offset, search, accessLevel } = opts;
     const { rows: result, count: totalCount } = await this.UserModel.findAndCountAll({
+      where: {
+        [Op.or]: {
+          email: { [Op.like]: search ? `%${search}%` : '%' },
+          firstName: { [Op.like]: search ? `%${search}%` : '%' },
+          lastName: { [Op.like]: search ? `%${search}%` : '%' },
+        },
+      },
       include: [
         {
           model: UserAccess,
           as: 'access',
-          where: { accessLevel },
+          where: { accessLevel: { [Op.in]: accessLevel.split(',') } },
         },
       ],
       limit: limit,

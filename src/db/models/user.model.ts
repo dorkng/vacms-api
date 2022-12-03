@@ -24,6 +24,8 @@ class User
 
   declare lastName: string;
 
+  declare fullName: string;
+
   declare phoneNumber: string;
 
   declare isAdmin: boolean;
@@ -55,6 +57,12 @@ export function init(connection: Sequelize) {
       lastName: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      fullName: {
+        type: DataTypes.VIRTUAL,
+        get() {
+          return `${this.firstName} ${this.lastName}`;
+        },
       },
       phoneNumber: {
         type: DataTypes.STRING,
