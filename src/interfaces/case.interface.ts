@@ -61,8 +61,7 @@ export interface ICaseVerdictAttribute {
 export interface ICaseNoteAttribute {
   id: number;
   caseId: number;
-  from: string;
-  to: string;
+  fromId: number;
+  toId: number;
   content: string;
-  date: Date;
 }

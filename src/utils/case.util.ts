@@ -54,10 +54,8 @@ class CaseUtil {
   
   public caseNoteCreationSchema = Joi.object().keys({
     caseId: Joi.number().required().label('Case'),
-    from: Joi.string().required().label('From'),
-    to: Joi.string().required().label('To'),
+    toId: Joi.number().required().label('To'),
     content: Joi.string().required().label('Content'),
-    date: Joi.date().required().label('Date'),
   });
 
   public caseDocumentCreationSchema = Joi.object().keys({

@@ -98,6 +98,22 @@ function associate() {
     },
     as: 'case',
   });
+  CaseNote.belongsTo(User, {
+    foreignKey: {
+      allowNull: false,
+      name: 'toId',
+      field: 'toId',
+    },
+    as: 'to',
+  });
+  CaseNote.belongsTo(User, {
+    foreignKey: {
+      allowNull: false,
+      name: 'fromId',
+      field: 'fromId',
+    },
+    as: 'from',
+  });
   // Case Report Relationships
   CaseReport.belongsTo(Case, {
     foreignKey: {

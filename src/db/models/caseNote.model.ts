@@ -7,6 +7,7 @@ import {
   Sequelize,
 } from 'sequelize';
 import { ICaseNoteAttribute } from '../../interfaces/case.interface';
+import { User, Case } from './index';
 
 class CaseNote
   extends Model<InferAttributes<CaseNote>, InferCreationAttributes<CaseNote>>
@@ -15,13 +16,17 @@ class CaseNote
 
   declare caseId: number;
 
-  declare from: string;
+  declare fromId: number;
 
-  declare to: string;
+  declare toId: number;
 
   declare content: string;
 
-  declare date: Date;
+  declare to?: User;
+
+  declare from?: User;
+
+  declare case?: Case;
 }
 
 export function init(connection: Sequelize) {
@@ -36,20 +41,16 @@ export function init(connection: Sequelize) {
         type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
       },
-      from: {
-        type: DataTypes.STRING,
+      fromId: {
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
       },
-      to: {
-        type: DataTypes.STRING,
+      toId: {
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
       },
       content: {
         type: DataTypes.TEXT('long'),
-        allowNull: false,
-      },
-      date: {
-        type: DataTypes.DATE,
         allowNull: false,
       },
     },

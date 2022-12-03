@@ -1,4 +1,4 @@
-import { User, UserVerification } from '../db/models';
+import { User, UserVerification, CaseNote } from '../db/models';
 import userService from '../services/user.service';
 import notificationService from '../services/notification.service';
 import { IMailOptions, ISmsOptions } from '../interfaces/notification.interface';
@@ -57,6 +57,21 @@ class NotificationUtil {
       replacements: { 
         email, firstName,
         link: `${serverConfig.FRONTEND_BASE_URL}/reset-password?uid=${id}&token=${token}`,
+      },
+    };
+    await notificationService.sendMail(options);
+  }
+
+  public async sendCaseNoteNotification(caseNote: CaseNote): Promise<void> {
+    const { case: { suitNumber }, to, from } = caseNote;
+    const options: IMailOptions = {
+      to: to.email,
+      subject: `You have a note on a case (${suitNumber})`,
+      templateName: 'caseNoteCreation',
+      replacements: { 
+        toFirstName: to.firstName,
+        suitNumber,
+        fromFullName: from.fullName,
       },
     };
     await notificationService.sendMail(options);

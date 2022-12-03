@@ -6,6 +6,7 @@ import { ConflictError, NotFoundError } from '../errors';
 import caseUtil from '../utils/case.util';
 import courtService from './court.service';
 import fileService from './file.service';
+import userService from './user.service';
 import { CaseStatus } from '../interfaces/case.interface';
 import { QueryOptions } from '../interfaces/functions.interface';
 
@@ -149,11 +150,24 @@ class CaseService {
     await this.CaseModel.update({ status }, { where: { id } });
   }
 
-  public async createNote(data: unknown): Promise<CaseNote> {
-    const attributes = await caseUtil.caseNoteCreationSchema.validateAsync(data);
-    const { caseId } = attributes;
-    await this.getById(caseId);
+  public async createNote(userId: number, data: unknown): Promise<CaseNote> {
+    const {
+      caseId, toId, content,
+    } = await caseUtil.caseNoteCreationSchema.validateAsync(data);
+    const attributes = { caseId, fromId: userId, toId, content };
+    await Promise.all([
+      this.getById(caseId),
+      userService.getById(toId),
+    ]);
     const caseNote = await this.CaseNoteModel.create(attributes);
+    return caseNote;
+  }
+
+  public async getNote(id: number): Promise<CaseNote> {
+    const caseNote = await this.CaseNoteModel.findByPk(id, {
+      include: ['case', 'to', 'from'],
+    });
+    if (!caseNote) throw new NotFoundError('Case not not found.');
     return caseNote;
   }
 
