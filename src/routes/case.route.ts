@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import {
+import CaseMetaController, {
   CaseAdjournmentController, CaseDocumentController, CaseNoteController, 
   CaseReportController, CaseVerdictController, CaseController,
 } from '../controllers/case';
@@ -81,6 +81,20 @@ class CaseVerdictRoutes extends CaseVerdictController {
   }
 }
 
+class CaseMetaRoutes extends CaseMetaController {
+  router: Router;
+
+  constructor() {
+    super();
+    this.router = Router();
+    this.routes();
+  }
+
+  private routes(): void {
+    this.router.get('/', this.index);
+  }
+}
+
 class CaseRoutes extends CaseController {
   public router: Router;
 
@@ -100,6 +114,8 @@ class CaseRoutes extends CaseController {
     this.router.use('/report', new CaseReportRoutes().router);
 
     this.router.use('/verdict', new CaseVerdictRoutes().router);
+
+    this.router.use('/meta', new CaseMetaRoutes().router);
 
     this.router.route('/')
       .post(this.create)

@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { Op, WhereOptions, InferAttributes } from 'sequelize';
+import { Op, WhereOptions, InferAttributes, fn, col } from 'sequelize';
 import { Case, CaseAdjournment, CaseVerdict, CaseNote, CaseReport, CaseDocument, Court } from '../db/models';
 import { ConflictError, NotFoundError } from '../errors';
 import caseUtil from '../utils/case.util';
+import helperUtil from '../utils/helper.util';
 import courtService from './court.service';
 import fileService from './file.service';
 import userService from './user.service';
-import { CaseStatus } from '../interfaces/case.interface';
+import { AccessLevel } from '../interfaces/user.interface';
+import { CaseStatus, CaseType } from '../interfaces/case.interface';
 import { QueryOptions } from '../interfaces/functions.interface';
 
 class CaseService {
@@ -87,7 +89,11 @@ class CaseService {
           ],
         },
         'verdict',
-        'notes',
+        {
+          model: CaseNote,
+          as: 'notes',
+          include: ['to', 'from'],
+        },
       ],
     });
     if (!retrievedCase) throw new NotFoundError('Case not found.');
@@ -193,6 +199,91 @@ class CaseService {
     await caseDocument.destroy();
     fileService.delete(caseDocument.path);
     return caseDocument;
+  }
+
+  public async getDashboardStatistics(isAdmin: boolean, accessLevel: AccessLevel): Promise<any[]> {
+    const statistics = [];
+    if (
+      [
+        'registrar', 'lawyer', 'director',
+        'permanent-secretary', 'attorney-general',
+      ].includes(accessLevel || null) || isAdmin
+    ) {
+      const allCase = await this.getAllCaseStats();
+      const activeCase = await this.getActiveCaseStats();
+      const caseDistributionByDepartment = await this.getCaseDistributionByDepartmentStats();
+      const civilCase = await this.getCaseStatsByType(CaseType.civil);
+      const appealCase = await this.getCaseStatsByType(CaseType.appeal);
+      const criminalCase = await this.getCaseStatsByType(CaseType.criminal);
+      statistics.push({ 
+        allCase, activeCase, caseDistributionByDepartment,
+        civilCase, appealCase, criminalCase,
+      });
+    }
+    return statistics[0];
+  }
+
+  private async getAllCaseStats() {
+    const count = await this.CaseModel.count();
+    const { currentDate, lastMonthDate } = helperUtil.getStartAndEndOfMonth();
+    const lastMonthCount = await this.CaseModel.count({
+      where: {
+        createdAt: {
+          [Op.gte]: lastMonthDate,
+          [Op.lte]: currentDate,
+        },
+      },
+    });
+    const difference = count - lastMonthCount;
+    return { count, difference };
+  }
+
+  private async getActiveCaseStats() {
+    const count = await this.CaseModel.count({
+      where: { status: { [Op.ne]: CaseStatus['verdict/judgement-passed'] } },
+    });
+    const { currentDate, lastMonthDate } = helperUtil.getStartAndEndOfMonth();
+    const lastMonthCount = await this.CaseModel.count({
+      where: {
+        status: { [Op.ne]: CaseStatus['verdict/judgement-passed'] },
+        createdAt: {
+          [Op.gte]: lastMonthDate,
+          [Op.lte]: currentDate,
+        },
+      },
+    });
+    const percentage = (count / lastMonthCount) * 100;
+    return { count, percentage };
+  }
+
+  private async getCaseDistributionByDepartmentStats() {
+    const caseDistribution = await this.CaseModel.findAll({
+      attributes: [
+        'type',
+        [fn('COUNT', col('*')), 'count'], 
+      ],
+      group: 'type',
+      order: [[fn('COUNT', col('*')), 'desc']],
+    });
+    return caseDistribution;
+  }
+
+  private async getCaseStatsByType(type: CaseType) {
+    const count = await this.CaseModel.count({
+      where: { type },
+    });
+    const { currentDate, lastMonthDate } = helperUtil.getStartAndEndOfMonth();
+    const lastMonthCount = await this.CaseModel.count({
+      where: {
+        type,
+        createdAt: {
+          [Op.gte]: lastMonthDate,
+          [Op.lte]: currentDate,
+        },
+      },
+    });
+    const difference = count - lastMonthCount;
+    return { count, difference };
   }
 }
 

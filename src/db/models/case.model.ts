@@ -32,6 +32,8 @@ class Case
   declare parentCaseId?: number;
 
   declare remarks?: string;
+
+  declare createdAt?: Date;
 }
 
 export function init(connection: Sequelize) {
