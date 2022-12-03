@@ -24,7 +24,7 @@ class FileService {
 
   private fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback): void => {
     if (!file.mimetype.includes('pdf')) {
-      cb(new BadRequestError('Invalid file type.'));
+      return cb(new BadRequestError('Invalid file type. Please upload a PDF file.'));
     }
     cb(null, true);
   };
@@ -32,7 +32,7 @@ class FileService {
   public fileUpload = multer({
     storage: this.storage,
     fileFilter: this.fileFilter,
-    limits : { fileSize: serverConfig.FILE_SIZE_LIMIT_IN_MB },
+    limits: { fileSize: serverConfig.FILE_SIZE_LIMIT_IN_MB },
   });
 
   public create(file: Express.Multer.File): string {
