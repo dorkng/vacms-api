@@ -32,14 +32,9 @@ class UserRoutes extends UserController {
 
     this.router.use(authMiddleware.validateUserToken);
 
-    this.router.use(authMiddleware.validateSuperAdminAccess);
-
-    this.router.route('/')
-      .post(this.create)
-      .get(
-        systemMiddleware.formatRequestQuery,
-        this.index,
-      );
+    this.router.post('/', authMiddleware.validateSuperAdminAccess, this.create);
+    
+    this.router.get('/', systemMiddleware.formatRequestQuery, this.index);
   }
 }
 
