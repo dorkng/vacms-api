@@ -48,7 +48,7 @@ class UserUtil {
 
   public getOtpExpiration() {
     const now = new Date(Date.now());
-    return moment(now).add(5, 'minutes').toDate();
+    return moment(now).add(2, 'minutes').toDate();
   }
 }
 
