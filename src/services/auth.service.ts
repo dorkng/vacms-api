@@ -33,7 +33,7 @@ class AuthService {
   }
 
   private generateToken(user: User): string {
-    return jwt.sign({ ...user.toJSON() }, serverConfig.AUTH_SECRET, { 
+    return jwt.sign(user, serverConfig.AUTH_SECRET, { 
       expiresIn: serverConfig.JWT_EXPIRATION,
     });
   }
