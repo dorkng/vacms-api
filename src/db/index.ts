@@ -26,7 +26,7 @@ class DB {
       if (serverConfig.NODE_ENV === 'development') {
         // await this.sequelize.sync({ alter: true });
         // await this.sequelize.sync({ force: true });
-        await this.sequelize.sync();
+        // await this.sequelize.sync();
       }
       serverConfig.DEBUG('Connected to database.');
       return this.sequelize;
