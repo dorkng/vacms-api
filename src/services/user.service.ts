@@ -106,7 +106,7 @@ class UserService {
     });
     if (!verification) throw new ConflictError('The otp you entered is invalid/expired.');
     await verification.set('isUsed', true).save();
-    const user = await this.get(userId);
+    const user = await this.getById(userId);
     return user;
   }
 
