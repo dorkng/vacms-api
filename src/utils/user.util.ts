@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+Zimport crypto from 'crypto';
 import Joi from 'joi';
 import moment from 'moment';
 
@@ -43,7 +43,7 @@ class UserUtil {
   }
 
   public generateOtp() {
-    return  Math.random().toString().slice(3, 9);
+    return  Math.floor(100000 + Math.random() * 900000);
   }
 
   public getOtpExpiration() {
