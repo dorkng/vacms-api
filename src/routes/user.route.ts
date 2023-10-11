@@ -29,7 +29,7 @@ class UserRoutes extends UserController {
   private routes(): void {
     this.router.use('/verification', new VerificationRoutes().router);
 
-    this.router.post('/', authMiddleware.validateSuperAdminAccess, this.create);
+    this.router.post('/', this.create);
   }
 }
 
