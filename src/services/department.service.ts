@@ -1,6 +1,6 @@
 import { Department } from '../db/models';
-import departmentUtil from '../utils/department.util';
 import { NotFoundError } from '../errors';
+import departmentUtil from '../utils/department.util';
 
 class DepartmentService {
   private DepartmentModel = Department;
@@ -18,9 +18,9 @@ class DepartmentService {
     return department;
   }
 
-  public async getAll(): Promise<{ rows: Department[]; count: number; }> {
-    const departments = await this.DepartmentModel.findAndCountAll();
-    return departments;
+  public async getAll(limit: number, offset: number): Promise<{ result: Department[]; totalCount: number; }> {
+    const { rows, count } = await this.DepartmentModel.findAndCountAll({ limit, offset });
+    return { result: rows, totalCount: count };
   }
 
   public async update(id: number, data: unknown): Promise<Department> {

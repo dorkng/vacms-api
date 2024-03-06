@@ -3,7 +3,10 @@ import { NotFoundError } from '../errors';
 import authMiddleware from '../middlewares/auth.middleware';
 import authRoutes from './auth.route';
 import departmentRoutes from './department.route';
+import courtRoutes from './court.route';
 import userRoutes from './user.route';
+import fileRoutes from './file.route';
+import caseRoutes from './case.route';
 
 class Routes {
   public router: Router;
@@ -19,7 +22,7 @@ class Routes {
         message: 'Welcome to VACMS API',
         data: {
           service: 'vacms-api',
-          version: '1.0.0',
+          version: '2.0.0',
         },
       });
     });
@@ -30,7 +33,13 @@ class Routes {
     
     this.router.use(authMiddleware.validateUserToken);
 
-    this.router.use('/department', authMiddleware.validateSuperAdminAccess, departmentRoutes);
+    this.router.use('/file', fileRoutes);
+
+    this.router.use('/department', departmentRoutes);
+
+    this.router.use('/court', courtRoutes);
+
+    this.router.use('/case', caseRoutes);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.router.use('*', (req: Request, res: Response) => {

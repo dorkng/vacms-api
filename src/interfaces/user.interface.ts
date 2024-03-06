@@ -4,6 +4,7 @@ export interface IUserAttribute {
   password: string;
   firstName: string;
   lastName: string;
+  fullName: string;
   phoneNumber: string;
   isAdmin: boolean;
 }
@@ -16,7 +17,7 @@ export interface IUserVerificationAttribute {
   isUsed: boolean;
 }
 
-export type AccessLevel = 'registerer' | 'lawyer' | 'director' | 'permanent-secretary' | 'attorney-general';
+export type AccessLevel = 'registrar' | 'lawyer' | 'director' | 'permanent-secretary' | 'attorney-general';
 
 export interface IUserAccessAttribute {
   id: number;

@@ -1,6 +1,6 @@
 import { Sequelize, Options } from 'sequelize';
 import { init as initModels } from './models';
-import serverConfig from '../config/sever.config';
+import serverConfig from '../config/server.config';
 
 class DB {
   public sequelize: Sequelize;

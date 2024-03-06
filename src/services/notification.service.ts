@@ -4,7 +4,7 @@ import SMTPTransport from 'nodemailer/lib/smtp-transport';
 import Mail from 'nodemailer/lib/mailer';
 import Handlebars from 'handlebars';
 import twilio from 'twilio';
-import serverConfig from '../config/sever.config';
+import serverConfig from '../config/server.config';
 import { IMailOptions, ISmsOptions } from '../interfaces/notification.interface';
 
 class NotificationService {

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import serverConfig from '../config/sever.config';
+import serverConfig from '../config/server.config';
 import { BadRequestError, UnauthorizedError, ForbiddenError } from '../errors';
 import authService from '../services/auth.service';
 import userService from '../services/user.service';
@@ -24,29 +24,27 @@ class AuthMiddleware {
     }
   }
 
+  public validateSuperAdminAccess(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { user: { isAdmin } } = req;
+      if (!isAdmin) throw new ForbiddenError();
+      return next();
+    } catch (error) {
+      serverConfig.DEBUG(`Error in auth middleware validate super admin method: ${error}`);
+      next(error);
+    }
+  }
+
   public validateAccessLevel(validAccessLevels: AccessLevel[]) {
     return (req: Request, res: Response, next: NextFunction) => {
       try {
-        const { user: { access: { accessLevel } } } = req;
-        if (!validAccessLevels.includes(accessLevel)) {
+        const { user: { isAdmin, access: { accessLevel } } } = req;
+        if (!isAdmin || !validAccessLevels.includes(accessLevel)) {
           throw new ForbiddenError();
         }
         return next();
       } catch (error) {
         serverConfig.DEBUG(`Error in auth middleware validate access level method: ${error}`);
-        next(error);
-      }
-    };
-  }
-
-  public validateSuperAdminAccess() {
-    return (req: Request, res: Response, next: NextFunction) => {
-      try {
-        const { user: { isAdmin } } = req;
-        if (!isAdmin) throw new ForbiddenError();
-        return next();
-      } catch (error) {
-        serverConfig.DEBUG(`Error in auth middleware validate super admin method: ${error}`);
         next(error);
       }
     };

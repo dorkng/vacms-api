@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { UserController, VerificationController } from '../controllers/user';
 import authMiddleware from '../middlewares/auth.middleware';
+import systemMiddleware from '../middlewares/system.middleware';
 
 class VerificationRoutes extends VerificationController {
   public router: Router;
@@ -29,7 +30,11 @@ class UserRoutes extends UserController {
   private routes(): void {
     this.router.use('/verification', new VerificationRoutes().router);
 
-    this.router.post('/', this.create);
+    this.router.use(authMiddleware.validateUserToken);
+
+    this.router.post('/', authMiddleware.validateSuperAdminAccess, this.create);
+    
+    this.router.get('/', systemMiddleware.formatRequestQuery, this.index);
   }
 }
 

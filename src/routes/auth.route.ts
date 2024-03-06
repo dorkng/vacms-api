@@ -12,7 +12,7 @@ class MeRoutes extends MeController {
   }
 
   private routes(): void {
-    this.router.route('/').get(this.get);
+    this.router.route('/').get(this.get).patch(this.update);
   }
 }
 
@@ -29,6 +29,8 @@ class AuthenticateRoutes extends AuthController {
     this.router.post('/validate', this.validate);
 
     this.router.post('/login', this.login);
+
+    this.router.post('/forgot-password', this.forgotPassword);
     
     this.router.use('/me', authMiddleware.validateUserToken, new MeRoutes().router);
   }

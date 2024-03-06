@@ -7,7 +7,7 @@ import {
   Sequelize,
 } from 'sequelize';
 import bcrypt from 'bcryptjs';
-import serverConfig from '../../config/sever.config';
+import serverConfig from '../../config/server.config';
 import { IUserAttribute } from '../../interfaces/user.interface';
 import { UserAccess } from './index';
 
@@ -23,6 +23,8 @@ class User
   declare firstName: string;
 
   declare lastName: string;
+
+  declare fullName: string;
 
   declare phoneNumber: string;
 
@@ -55,6 +57,12 @@ export function init(connection: Sequelize) {
       lastName: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      fullName: {
+        type: DataTypes.VIRTUAL,
+        get() {
+          return `${this.firstName} ${this.lastName}`;
+        },
       },
       phoneNumber: {
         type: DataTypes.STRING,

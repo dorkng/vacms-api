@@ -1,0 +1,52 @@
+---
+kind: pipeline
+name: default
+type: docker
+
+trigger:
+  ref:
+    - refs/heads/develop
+    - refs/heads/VAC-*
+
+steps:
+  - name: install
+    image: node:latest
+    commands:
+    - npm install
+    - npm run build
+
+  - name: deploy
+    image: appleboy/drone-scp
+    settings:
+      host:
+        from_secret: SSH_HOST
+      username:
+        from_secret: SSH_USER
+      key:
+        from_secret: SSH_KEY
+      port: 22
+      rm: true
+      target: /var/www/webapps/vacms/vacmsapi
+      source:
+        - ./*
+    when:
+      branch:
+        - develop
+
+  - name: ssh
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: SSH_HOST
+      username:
+        from_secret: SSH_USER
+      key:
+        from_secret: SSH_KEY
+      script:
+        - cp /var/www/envs/vacms/.env.staging /var/www/webapps/vacms/vacmsapi/.env
+        - pushd /var/www/webapps/vacms/vacmsapi
+        - pm2 start 0
+    when:
+      branch:
+        - develop
+

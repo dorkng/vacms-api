@@ -3,6 +3,8 @@ import { Op } from 'sequelize';
 import { User, UserAccess, UserVerification } from '../db/models';
 import { NotFoundError, ConflictError } from '../errors';
 import userUtil from '../utils/user.util';
+import authService from './auth.service';
+import { QueryOptions } from '../interfaces/functions.interface';
 
 class UserService {
   private UserModel = User;
@@ -36,6 +38,35 @@ class UserService {
     });
     if (!user) throw new NotFoundError('User not found.');
     return user;
+  }
+
+  public async getById(id: number): Promise<User> {
+    const user = await this.UserModel.findByPk(id);
+    if (!user) throw new NotFoundError('User not found.');
+    return user;
+  }
+
+  public async getAll(opts: QueryOptions): Promise<{ result: User[], totalCount: number }> {
+    const { limit, offset, search, accessLevel } = opts;
+    const { rows: result, count: totalCount } = await this.UserModel.findAndCountAll({
+      where: {
+        [Op.or]: {
+          email: { [Op.like]: search ? `%${search}%` : '%' },
+          firstName: { [Op.like]: search ? `%${search}%` : '%' },
+          lastName: { [Op.like]: search ? `%${search}%` : '%' },
+        },
+      },
+      include: [
+        {
+          model: UserAccess,
+          as: 'access',
+          where: { accessLevel: { [Op.in]: accessLevel.split(',') } },
+        },
+      ],
+      limit: limit,
+      offset: offset,
+    });
+    return { result, totalCount };
   }
 
   private async validateEmail(email: string): Promise<User> {
@@ -73,9 +104,9 @@ class UserService {
     const verification = await this.UserVerificationModel.findOne({
       where: { userId, otp, expiresOn: { [Op.gte]: now }, isUsed: false },
     });
-    if (!verification) throw new ConflictError('The otp you entered is invalid.');
+    if (!verification) throw new ConflictError('The otp you entered is invalid/expired.');
     await verification.set('isUsed', true).save();
-    const user = await this.get(userId);
+    const user = await this.getById(userId);
     return user;
   }
 
@@ -104,6 +135,21 @@ class UserService {
       throw new ConflictError('Link is invalid.');
     }
     await user.set('password', password).save();
+    return user.reload();
+  }
+
+  public async changePassword(userId: number, data: unknown): Promise<User> {
+    const user = await this.UserModel.scope('withPassword').findByPk(userId);
+    const {
+      currentPassword, confirmPassword,
+    } = await userUtil.changePasswordSchema.validateAsync(data);
+    if (!authService.validatePassword(user, currentPassword)) {
+      throw new ConflictError('Current password is incorrect.');
+    }
+    if (authService.validatePassword(user, confirmPassword)) {
+      throw new ConflictError('Current password cannot be used as new password.');
+    }
+    await user.set('password', confirmPassword).save();
     return user.reload();
   }
 }

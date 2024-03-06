@@ -13,7 +13,7 @@ class UserUtil {
         accessLevel: Joi.string()
           .valid(
             ...[
-              'registerer',
+              'registrar',
               'lawyer',
               'director',
               'permanent-secretary',
@@ -27,6 +27,12 @@ class UserUtil {
       .label('User Access'),
   });
 
+  public changePasswordSchema = Joi.object().keys({
+    currentPassword: Joi.string().required().label('Current Password'),
+    newPassword: Joi.string().min(8).required().label('New Password'),
+    confirmPassword: Joi.ref('newPassword'),
+  });
+
   public validateUserPassword = Joi.object().keys({
     password: Joi.string().min(8).required().label('Password'),
     confirmPassword: Joi.ref('password'),
@@ -37,12 +43,12 @@ class UserUtil {
   }
 
   public generateOtp() {
-    return crypto.randomBytes(256).toString('ascii').slice(0, 6);
+    return  Math.floor(100000 + Math.random() * 900000).toString();
   }
 
   public getOtpExpiration() {
     const now = new Date(Date.now());
-    return moment(now).add(5, 'minutes').toDate();
+    return moment(now).add(2, 'minutes').toDate();
   }
 }
 
