@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { Request } from 'express';
-import multer, { FileFilterCallback } from 'multer';
+import multer from 'multer';
 import serverConfig from '../config/server.config';
 import { BadRequestError, NotFoundError } from '../errors';
 
@@ -22,16 +22,8 @@ class FileService {
     },
   });
 
-  private fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallback): void => {
-    if (!file.mimetype.includes('pdf')) {
-      return cb(new BadRequestError('Invalid file type. Please upload a PDF file.'));
-    }
-    cb(null, true);
-  };
-
   public fileUpload = multer({
     storage: this.storage,
-    fileFilter: this.fileFilter,
     limits: { fileSize: serverConfig.FILE_SIZE_LIMIT_IN_MB },
   });
 
