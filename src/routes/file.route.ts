@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { FileController } from '../controllers/file';
 import fileService from '../services/file.service';
+import authMiddleware from '../middlewares/auth.middleware';
 
 class FileRoutes extends FileController {
   public router: Router;
@@ -12,12 +13,15 @@ class FileRoutes extends FileController {
   }
 
   private routes(): void {
-    this.router.use(fileService.fileUpload.single('file'));
-
-    this.router.route('/')
-      .post(this.create)
+    this.router
+      .route('/')
+      .post(
+        authMiddleware.validateUserToken,
+        fileService.fileUpload.single('file'),
+        this.create,
+      )
       .get(this.get)
-      .delete(this.delete);
+      .delete(authMiddleware.validateUserToken, this.delete);
   }
 }
 
