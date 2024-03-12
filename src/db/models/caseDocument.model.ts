@@ -7,6 +7,7 @@ import {
   Sequelize,
 } from 'sequelize';
 import { ICaseDocumentAttribute, CaseDocumentType } from '../../interfaces/case.interface';
+import serverConfig from '../../config/server.config';
 
 class CaseDocument
   extends Model<InferAttributes<CaseDocument>, InferCreationAttributes<CaseDocument>>
@@ -39,6 +40,15 @@ export function init(connection: Sequelize) {
       path: {
         type: DataTypes.STRING,
         allowNull: false,
+        get() {
+          const value = this.getDataValue('path');
+
+          if (value.startsWith('./files/')) {
+            return `${serverConfig.BASE_URL}/file?path=${value}`;
+          }
+
+          return value;
+        },
       },
     },
     {

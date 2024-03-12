@@ -7,6 +7,7 @@ import {
   Sequelize,
 } from 'sequelize';
 import { ICourtTypeAttribute } from '../../interfaces/court.interface';
+import serverConfig from '../../config/server.config';
 
 class CourtType
   extends Model<InferAttributes<CourtType>, InferCreationAttributes<CourtType>>
@@ -37,12 +38,24 @@ export function init(connection: Sequelize) {
         allowNull: false,
         unique: true,
         set() {
-          this.setDataValue('label', this.name.replace(/\s+/g, '-').toLowerCase());
+          this.setDataValue(
+            'label',
+            this.name.replace(/\s+/g, '-').toLowerCase(),
+          );
         },
       },
       logoUrl: {
         type: DataTypes.STRING,
         allowNull: false,
+        get() {
+          const value = this.getDataValue('logoUrl');
+
+          if (value.startsWith('.files')) {
+            return `${serverConfig.BASE_URL}/file?path=${value}`;
+          }
+
+          return value;
+        },
       },
     },
     {

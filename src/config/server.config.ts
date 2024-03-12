@@ -5,10 +5,12 @@ config();
 
 class ServerConfig {
   public DEBUG = debug('dev');
-  
+
   public NODE_ENV = process.env.NODE_ENV;
 
   public PORT = process.env.PORT;
+
+  public BASE_URL = process.env.BASE_URL;
 
   public ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS;
 
@@ -48,7 +50,8 @@ class ServerConfig {
 
   public FILE_STORAGE_PATH = process.env.FILE_STORAGE_PATH;
 
-  public FILE_SIZE_LIMIT_IN_MB = Number(process.env.FILE_SIZE_LIMIT_IN_MB) * 1000000;
+  public FILE_SIZE_LIMIT_IN_MB =
+    Number(process.env.FILE_SIZE_LIMIT_IN_MB) * 1000000;
 }
 
 export default new ServerConfig();
