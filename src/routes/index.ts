@@ -31,9 +31,9 @@ class Routes {
 
     this.router.use('/user', userRoutes);
     
-    this.router.use(authMiddleware.validateUserToken);
-
     this.router.use('/file', fileRoutes);
+
+    this.router.use(authMiddleware.validateUserToken);
 
     this.router.use('/department', departmentRoutes);
 
