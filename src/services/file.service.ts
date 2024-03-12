@@ -14,10 +14,18 @@ class FileService {
   }
 
   private storage = multer.diskStorage({
-    destination: (req: Request, file: Express.Multer.File, cb: DestinationCallback): void => {
+    destination: (
+      req: Request,
+      file: Express.Multer.File,
+      cb: DestinationCallback,
+    ): void => {
       cb(null, serverConfig.FILE_STORAGE_PATH);
     },
-    filename: (req: Request, file: Express.Multer.File, cb: FileNameCallback): void => {
+    filename: (
+      req: Request,
+      file: Express.Multer.File,
+      cb: FileNameCallback,
+    ): void => {
       cb(null, this.getFileIdentifier(file.originalname));
     },
   });
@@ -29,8 +37,8 @@ class FileService {
 
   public create(file: Express.Multer.File): string {
     if (!file) throw new BadRequestError('No file attached.');
-    const { path } = file;
-    return path;
+    const { filename } = file;
+    return filename;
   }
 
   public get(path: string): string {

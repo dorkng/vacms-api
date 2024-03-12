@@ -51,7 +51,7 @@ export function init(connection: Sequelize) {
           const value = this.getDataValue('logoUrl');
 
           if (value.startsWith('.files')) {
-            return `${serverConfig.BASE_URL}/file?path=${value}`;
+            return `${serverConfig.BASE_URL}/file/${value}`;
           }
 
           return value;
