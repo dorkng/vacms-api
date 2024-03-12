@@ -1,6 +1,8 @@
 import { Sequelize } from 'sequelize/types';
 import Case, { init as initCase } from './case.model';
-import CaseAdjournment, { init as initCaseAdjournment } from './caseAdjournment.model';
+import CaseAdjournment, {
+  init as initCaseAdjournment,
+} from './caseAdjournment.model';
 import CaseDocument, { init as initCaseDocument } from './caseDocument.model';
 import CaseNote, { init as initCaseNote } from './caseNote.model';
 import CaseReport, { init as initCaseReport } from './caseReport.model';
@@ -11,7 +13,9 @@ import CourtType, { init as initCourtType } from './courtType.model';
 import Department, { init as initDepartment } from './department.model';
 import User, { init as initUser } from './user.model';
 import UserAccess, { init as initUserAccess } from './userAccess.model';
-import UserVerification, { init as initUserVerification } from './userVerification.model';
+import UserVerification, {
+  init as initUserVerification,
+} from './userVerification.model';
 
 function associate() {
   // Case Relationships
@@ -22,6 +26,7 @@ function associate() {
       field: 'courtId',
     },
     as: 'court',
+    onDelete: 'CASCADE',
   });
   Case.hasMany(Case, {
     foreignKey: {
@@ -29,6 +34,7 @@ function associate() {
       name: 'parentCaseId',
       field: 'parentCaseId',
     },
+    onDelete: 'CASCADE',
     as: 'interlocutories',
   });
   Case.hasMany(CaseAdjournment, {
@@ -37,6 +43,7 @@ function associate() {
       name: 'caseId',
       field: 'caseId',
     },
+    onDelete: 'CASCADE',
     as: 'adjournments',
   });
   Case.hasMany(CaseDocument, {
@@ -45,6 +52,7 @@ function associate() {
       name: 'caseId',
       field: 'caseId',
     },
+    onDelete: 'CASCADE',
     as: 'documents',
   });
   Case.hasMany(CaseReport, {
@@ -53,6 +61,7 @@ function associate() {
       name: 'caseId',
       field: 'caseId',
     },
+    onDelete: 'CASCADE',
     as: 'reports',
   });
   Case.hasMany(CaseNote, {
@@ -61,6 +70,7 @@ function associate() {
       name: 'caseId',
       field: 'caseId',
     },
+    onDelete: 'CASCADE',
     as: 'notes',
   });
   Case.hasOne(CaseVerdict, {
@@ -69,6 +79,7 @@ function associate() {
       name: 'caseId',
       field: 'caseId',
     },
+    onDelete: 'CASCADE',
     as: 'verdict',
   });
   // Case Adjournment Relationships
@@ -78,6 +89,7 @@ function associate() {
       name: 'caseId',
       field: 'caseId',
     },
+    onDelete: 'CASCADE',
     as: 'case',
   });
   // Case Document Relationships
@@ -87,6 +99,7 @@ function associate() {
       name: 'caseId',
       field: 'caseId',
     },
+    onDelete: 'CASCADE',
     as: 'case',
   });
   // Case Note Relationships
@@ -96,6 +109,7 @@ function associate() {
       name: 'caseId',
       field: 'caseId',
     },
+    onDelete: 'CASCADE',
     as: 'case',
   });
   CaseNote.belongsTo(User, {
@@ -104,6 +118,7 @@ function associate() {
       name: 'toId',
       field: 'toId',
     },
+    onDelete: 'CASCADE',
     as: 'to',
   });
   CaseNote.belongsTo(User, {
@@ -121,6 +136,7 @@ function associate() {
       name: 'caseId',
       field: 'caseId',
     },
+    onDelete: 'CASCADE',
     as: 'case',
   });
   // Case Verdict Relationships
@@ -130,6 +146,7 @@ function associate() {
       name: 'caseId',
       field: 'caseId',
     },
+    onDelete: 'CASCADE',
     as: 'case',
   });
   // Court Relationships
@@ -139,6 +156,7 @@ function associate() {
       name: 'typeId',
       field: 'typeId',
     },
+    onDelete: 'CASCADE',
     as: 'type',
   });
   Court.belongsTo(CourtAddress, {
@@ -147,6 +165,7 @@ function associate() {
       name: 'addressId',
       field: 'addressId',
     },
+    onDelete: 'CASCADE',
     as: 'address',
   });
   // User Relationships
@@ -177,9 +196,20 @@ function associate() {
   });
 }
 
-export { 
-  Case, CaseAdjournment, CaseDocument, CaseNote, CaseReport, CaseVerdict, Court,
-  CourtAddress, CourtType, Department, User, UserAccess, UserVerification,
+export {
+  Case,
+  CaseAdjournment,
+  CaseDocument,
+  CaseNote,
+  CaseReport,
+  CaseVerdict,
+  Court,
+  CourtAddress,
+  CourtType,
+  Department,
+  User,
+  UserAccess,
+  UserVerification,
 };
 
 export function init(connection: Sequelize) {
