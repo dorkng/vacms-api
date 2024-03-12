@@ -19,12 +19,12 @@ class CourtUtil {
 
   public courtTypeCreationSchema = Joi.object().keys({
     name: Joi.string().required().label('Court Type'),
-    logoUrl: Joi.string().uri().required().label('Logo'),
+    logoUrl: Joi.string().required().label('Logo'),
   });
   
   public courtTypeUpdateSchema = Joi.object().keys({
     name: Joi.string().optional().label('Court Type'),
-    logoUrl: Joi.string().uri().optional().label('Logo'),
+    logoUrl: Joi.string().optional().label('Logo'),
   });
 
   public courtAddressCreationSchema = Joi.object().keys({
