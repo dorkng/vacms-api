@@ -49,7 +49,7 @@ export function init(connection: Sequelize) {
         allowNull: false,
         get() {
           const value = this.getDataValue('logoUrl');
-          return `${serverConfig.BASE_URL}/file/${value}`;
+          return `${serverConfig.BASE_URL}/images/${value}`;
         },
       },
     },
