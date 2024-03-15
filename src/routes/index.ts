@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import express, { Router, Request, Response } from 'express';
 import { NotFoundError } from '../errors';
 import authMiddleware from '../middlewares/auth.middleware';
 import authRoutes from './auth.route';
@@ -27,13 +27,15 @@ class Routes {
       });
     });
 
+    this.router.use(express.static('public'));
+
     this.router.use('/auth', authRoutes);
 
     this.router.use('/user', userRoutes);
-    
-    this.router.use('/file', fileRoutes);
 
     this.router.use(authMiddleware.validateUserToken);
+
+    this.router.use('/file', fileRoutes);
 
     this.router.use('/department', departmentRoutes);
 

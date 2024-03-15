@@ -1,8 +1,7 @@
-import express, { Router } from 'express';
+import { Router } from 'express';
 import { FileController } from '../controllers/file';
 import fileService from '../services/file.service';
 import authMiddleware from '../middlewares/auth.middleware';
-import serverConfig from '../config/server.config';
 
 class FileRoutes extends FileController {
   public router: Router;
@@ -24,7 +23,6 @@ class FileRoutes extends FileController {
 
     this.router
       .route('/:filename')
-      .get(express.static(serverConfig.FILE_STORAGE_PATH))
       .delete(authMiddleware.validateUserToken, this.delete);
   }
 }
