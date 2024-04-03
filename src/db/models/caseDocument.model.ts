@@ -48,6 +48,11 @@ export function init(connection: Sequelize) {
         allowNull: false,
         get() {
           const value = this.getDataValue('path');
+
+          if (value.startsWith('https://')) {
+            return value;
+          }
+
           return `${serverConfig.BASE_URL}/images/${value}`;
         },
       },
