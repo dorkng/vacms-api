@@ -7,7 +7,7 @@ class UserUtil {
     email: Joi.string().email().required().label('User Email'),
     firstName: Joi.string().required().label('User First Name'),
     lastName: Joi.string().required().label('User Last Name'),
-    phoneNumber: Joi.string().required().label('User Phone Number'),
+    phoneNumber: Joi.string().min(15).required().label('User Phone Number'),
     access: Joi.object()
       .keys({
         accessLevel: Joi.string()
