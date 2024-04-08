@@ -8,6 +8,7 @@ import {
 } from 'sequelize';
 import { ICustodialFacilityAttribute } from '../../interfaces/custodialFacility.interface';
 import { State } from './index';
+import helperUtil from '../../utils/helper.util';
 
 class CustodialFacility
   extends Model<
@@ -43,10 +44,7 @@ export function init(connection: Sequelize) {
         allowNull: false,
         unique: true,
         set() {
-          this.setDataValue(
-            'label',
-            this.name.replace(/\s+/g, '-').toLowerCase(),
-          );
+          this.setDataValue('label', helperUtil.getLabel(this.name));
         },
       },
       capacity: {

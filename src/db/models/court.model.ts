@@ -8,6 +8,7 @@ import {
 } from 'sequelize';
 import { ICourtAttribute } from '../../interfaces/court.interface';
 import { CourtAddress, CourtType } from './index';
+import helperUtil from '../../utils/helper.util';
 
 class Court
   extends Model<InferAttributes<Court>, InferCreationAttributes<Court>>
@@ -44,10 +45,7 @@ export function init(connection: Sequelize) {
         allowNull: false,
         unique: true,
         set() {
-          this.setDataValue(
-            'label',
-            this.name.replace(/\s+/g, '-').toLowerCase(),
-          );
+          this.setDataValue('label', helperUtil.getLabel(this.name));
         },
       },
       typeId: {

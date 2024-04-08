@@ -7,6 +7,7 @@ import {
   Sequelize,
 } from 'sequelize';
 import { IStateAttribute } from '../../interfaces/state.interface';
+import helperUtil from '../../utils/helper.util';
 
 class State
   extends Model<InferAttributes<State>, InferCreationAttributes<State>>
@@ -35,10 +36,7 @@ export function init(connection: Sequelize) {
         allowNull: false,
         unique: true,
         set() {
-          this.setDataValue(
-            'label',
-            this.name.replace(/\s+/g, '-').toLowerCase(),
-          );
+          this.setDataValue('label', helperUtil.getLabel(this.name));
         },
       },
     },

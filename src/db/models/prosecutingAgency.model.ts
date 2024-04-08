@@ -11,6 +11,7 @@ import {
   JurisdictionType,
 } from '../../interfaces/prosecutingAgency.interface';
 import { State } from './index';
+import helperUtil from '../../utils/helper.util';
 
 class ProsecutingAgency
   extends Model<
@@ -46,10 +47,7 @@ export function init(connection: Sequelize) {
         allowNull: false,
         unique: true,
         set() {
-          this.setDataValue(
-            'label',
-            this.name.replace(/\s+/g, '-').toLowerCase(),
-          );
+          this.setDataValue('label', helperUtil.getLabel(this.name));
         },
       },
       jurisdiction: {

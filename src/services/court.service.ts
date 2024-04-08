@@ -1,6 +1,7 @@
 import { Court, CourtType, CourtAddress, State } from '../db/models';
 import { NotFoundError } from '../errors';
 import courtUtil from '../utils/court.util';
+import helperUtil from '../utils/helper.util';
 import stateService from './state.service';
 
 class CourtService {
@@ -74,7 +75,7 @@ class CourtService {
 
     if (addressId) await this.getAddress(addressId);
 
-    if (name) label = name.replace(/\s+/g, '-').toLowerCase();
+    if (name) label = helperUtil.getLabel(name);
 
     const attributes = {
       name,
@@ -134,7 +135,7 @@ class CourtService {
     const { name, logoUrl } =
       await courtUtil.courtTypeUpdateSchema.validateAsync(data);
 
-    if (name) label = name.replace(/\s+/g, '-').toLowerCase();
+    if (name) label = helperUtil.getLabel(name);
 
     const attributes = { name, logoUrl, label };
 

@@ -2,6 +2,7 @@ import { Op, WhereOptions, InferAttributes } from 'sequelize';
 import { State } from '../db/models';
 import { QueryOptions } from '../interfaces/functions.interface';
 import { NotFoundError } from '../errors';
+import helperUtil from '../utils/helper.util';
 
 class StateService {
   private StateModel = State;
@@ -32,6 +33,14 @@ class StateService {
     if (!state) throw new NotFoundError('State not found.');
 
     return state;
+  }
+
+  public async getByName(name: string): Promise<State> {
+    const label = helperUtil.getLabel(name);
+
+    return this.StateModel.findOne({
+      where: { label },
+    });
   }
 }
 
