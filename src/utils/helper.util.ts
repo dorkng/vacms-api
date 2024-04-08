@@ -20,7 +20,8 @@ class HelperUtil {
   }
 
   public getLabel(name: string): string {
-    return name.replace(/\s+/g, '-').toLowerCase();
+    const label = name.replace(/([^\w ]|_)/g, '');
+    return `${label.replace(/\s+/g, '-').toLowerCase()}`;
   }
 
   private setFormattedDate(time: string, date: Date) {
