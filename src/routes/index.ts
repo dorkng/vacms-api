@@ -7,6 +7,7 @@ import courtRoutes from './court.route';
 import userRoutes from './user.route';
 import fileRoutes from './file.route';
 import caseRoutes from './case.route';
+import stateRoutes from './state.route';
 
 class Routes {
   public router: Router;
@@ -42,6 +43,8 @@ class Routes {
     this.router.use('/court', courtRoutes);
 
     this.router.use('/case', caseRoutes);
+
+    this.router.use('/state', stateRoutes);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.router.use('*', (req: Request, res: Response) => {
