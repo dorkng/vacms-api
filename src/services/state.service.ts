@@ -1,6 +1,7 @@
 import { Op, WhereOptions, InferAttributes } from 'sequelize';
 import { State } from '../db/models';
 import { QueryOptions } from '../interfaces/functions.interface';
+import { NotFoundError } from '../errors';
 
 class StateService {
   private StateModel = State;
@@ -23,6 +24,14 @@ class StateService {
     });
 
     return { result: rows, totalCount: count };
+  }
+
+  public async getById(id: number): Promise<State> {
+    const state = await this.StateModel.findByPk(id);
+
+    if (!state) throw new NotFoundError('State not found.');
+
+    return state;
   }
 }
 

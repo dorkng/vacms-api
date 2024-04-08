@@ -35,7 +35,10 @@ import Court, {
   init as initCourt,
   associate as associateCourt,
 } from './court.model';
-import CourtAddress, { init as initCourtAddress } from './courtAddress.model';
+import CourtAddress, {
+  init as initCourtAddress,
+  associate as associateCourtAddress,
+} from './courtAddress.model';
 import CourtType, { init as initCourtType } from './courtType.model';
 import CustodialFacility, {
   init as initCustodialFacility,
@@ -78,6 +81,8 @@ function associate() {
   associateConvictedInmate();
   // Court Relationships
   associateCourt();
+  // Court Address Relationships
+  associateCourtAddress();
   // Custodial Facility Relationships
   associateCustodialFacility();
   // Prosecuting Agency Relationships

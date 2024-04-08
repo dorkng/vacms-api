@@ -50,7 +50,7 @@ export function init(connection: Sequelize) {
         get() {
           const value = this.getDataValue('logoUrl');
 
-          if (value.startsWith('https://')) {
+          if (value.startsWith('http')) {
             return value;
           }
 
