@@ -60,7 +60,7 @@ export function init(connection: Sequelize) {
       },
     },
     {
-      tableName: 'prosecurting_agencies',
+      tableName: 'prosecuting_agencies',
       timestamps: true,
       sequelize: connection,
     },

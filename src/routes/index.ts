@@ -7,6 +7,7 @@ import courtRoutes from './court.route';
 import custodialFacilityRoutes from './custodialFacility.route';
 import departmentRoutes from './department.route';
 import fileRoutes from './file.route';
+import prosecutingAgencyRoutes from './prosecutingAgency.route';
 import stateRoutes from './state.route';
 import userRoutes from './user.route';
 
@@ -48,6 +49,8 @@ class Routes {
     this.router.use('/file', fileRoutes);
 
     this.router.use('/state', stateRoutes);
+
+    this.router.use('/prosecuting-agency', prosecutingAgencyRoutes);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.router.use('*', (req: Request, res: Response) => {

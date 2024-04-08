@@ -72,6 +72,8 @@ class CsvUtil {
       ];
     } else if (type === CsvFileParseType.CUSTODIAL_FACILITY) {
       expectedHeaders = ['Name', 'Capacity', 'State'];
+    } else if (type === CsvFileParseType.PROSECUTING_AGENCY) {
+      expectedHeaders = ['Name', 'Jurisdiction', 'State'];
     } else {
       throw new ConflictError('Invalid CSV type.');
     }
