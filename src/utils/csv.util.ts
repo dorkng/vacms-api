@@ -70,6 +70,8 @@ class CsvUtil {
         'Date of Admission',
         'Other Means Of Id',
       ];
+    } else if (type === CsvFileParseType.CUSTODIAL_FACILITY) {
+      expectedHeaders = ['Name', 'Capacity', 'State'];
     } else {
       throw new ConflictError('Invalid CSV type.');
     }
