@@ -7,6 +7,7 @@ import {
   Sequelize,
 } from 'sequelize';
 import { ICourtAttribute } from '../../interfaces/court.interface';
+import { CourtAddress, CourtType } from './index';
 
 class Court
   extends Model<InferAttributes<Court>, InferCreationAttributes<Court>>
@@ -43,7 +44,10 @@ export function init(connection: Sequelize) {
         allowNull: false,
         unique: true,
         set() {
-          this.setDataValue('label', this.name.replace(/\s+/g, '-').toLowerCase());
+          this.setDataValue(
+            'label',
+            this.name.replace(/\s+/g, '-').toLowerCase(),
+          );
         },
       },
       typeId: {
@@ -69,6 +73,28 @@ export function init(connection: Sequelize) {
       sequelize: connection,
     },
   );
+}
+
+export function associate() {
+  Court.belongsTo(CourtType, {
+    foreignKey: {
+      allowNull: false,
+      name: 'typeId',
+      field: 'typeId',
+    },
+    onDelete: 'CASCADE',
+    as: 'type',
+  });
+
+  Court.belongsTo(CourtAddress, {
+    foreignKey: {
+      allowNull: false,
+      name: 'addressId',
+      field: 'addressId',
+    },
+    onDelete: 'CASCADE',
+    as: 'address',
+  });
 }
 
 export default Court;

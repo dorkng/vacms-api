@@ -7,9 +7,13 @@ import {
   Sequelize,
 } from 'sequelize';
 import { ICaseVerdictAttribute } from '../../interfaces/case.interface';
+import { Case } from './index';
 
 class CaseVerdict
-  extends Model<InferAttributes<CaseVerdict>, InferCreationAttributes<CaseVerdict>>
+  extends Model<
+  InferAttributes<CaseVerdict>,
+  InferCreationAttributes<CaseVerdict>
+  >
   implements ICaseVerdictAttribute {
   declare id: CreationOptional<number>;
 
@@ -41,6 +45,18 @@ export function init(connection: Sequelize) {
       sequelize: connection,
     },
   );
+}
+
+export function associate() {
+  CaseVerdict.belongsTo(Case, {
+    foreignKey: {
+      allowNull: false,
+      name: 'caseId',
+      field: 'caseId',
+    },
+    onDelete: 'CASCADE',
+    as: 'case',
+  });
 }
 
 export default CaseVerdict;

@@ -11,6 +11,7 @@ import {
   CaseDocumentType,
 } from '../../interfaces/case.interface';
 import serverConfig from '../../config/server.config';
+import { Case } from './index';
 
 class CaseDocument
   extends Model<
@@ -63,6 +64,18 @@ export function init(connection: Sequelize) {
       sequelize: connection,
     },
   );
+}
+
+export function associate() {
+  CaseDocument.belongsTo(Case, {
+    foreignKey: {
+      allowNull: false,
+      name: 'caseId',
+      field: 'caseId',
+    },
+    onDelete: 'CASCADE',
+    as: 'case',
+  });
 }
 
 export default CaseDocument;
