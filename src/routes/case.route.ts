@@ -1,7 +1,11 @@
 import { Router } from 'express';
 import CaseMetaController, {
-  CaseAdjournmentController, CaseDocumentController, CaseNoteController, 
-  CaseReportController, CaseVerdictController, CaseController,
+  CaseAdjournmentController,
+  CaseDocumentController,
+  CaseNoteController,
+  CaseReportController,
+  CaseVerdictController,
+  CaseController,
 } from '../controllers/case';
 import systemMiddleware from '../middlewares/system.middleware';
 import fileService from '../services/file.service';
@@ -30,11 +34,9 @@ class CaseDocumentRoutes extends CaseDocumentController {
   }
 
   private routes(): void {
-    this.router.route('/')
-      .post(
-        fileService.fileUpload.single('file'),
-        this.create,
-      );
+    this.router
+      .route('/')
+      .post(fileService.fileUpload.single('file'), this.create);
     this.router.delete('/:id', this.delete);
   }
 }
@@ -117,16 +119,14 @@ class CaseRoutes extends CaseController {
 
     this.router.use('/meta', new CaseMetaRoutes().router);
 
-    this.router.route('/')
-      .post(this.create)
-      .get(
-        systemMiddleware.formatRequestQuery,
-        this.index,
-      );
+    this.router.route('/suit-number').get(this.getBySuitNumber);
 
-    this.router.route('/:id')
-      .get(this.get)
-      .put(this.update);
+    this.router
+      .route('/')
+      .post(this.create)
+      .get(systemMiddleware.formatRequestQuery, this.index);
+
+    this.router.route('/:id').get(this.get).put(this.update);
   }
 }
 

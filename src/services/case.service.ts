@@ -1,7 +1,15 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { Op, WhereOptions, InferAttributes, fn, col } from 'sequelize';
-import { Case, CaseAdjournment, CaseVerdict, CaseNote, CaseReport, CaseDocument, Court } from '../db/models';
+import {
+  Case,
+  CaseAdjournment,
+  CaseVerdict,
+  CaseNote,
+  CaseReport,
+  CaseDocument,
+  Court,
+} from '../db/models';
 import { ConflictError, NotFoundError } from '../errors';
 import caseUtil from '../utils/case.util';
 import helperUtil from '../utils/helper.util';
@@ -18,7 +26,7 @@ class CaseService {
   private CaseAdjournmentModel = CaseAdjournment;
 
   private CaseVerdictModel = CaseVerdict;
-  
+
   private CaseReportModel = CaseReport;
 
   private CaseNoteModel = CaseNote;
@@ -27,20 +35,25 @@ class CaseService {
 
   public async create(data: unknown): Promise<Case> {
     const attributes = await caseUtil.caseCreationSchema.validateAsync(data);
+
     const { suitNumber, courtId, parentCaseId } = attributes;
+
     await Promise.all([
       this.checkSuitNumber(suitNumber),
       courtService.get(courtId),
     ]);
+
     if (parentCaseId) await this.get(parentCaseId);
+
     const newCase = await this.CaseModel.create(attributes, {
       include: [
-        { 
+        {
           model: CaseDocument,
           as: 'documents',
         },
       ],
     });
+
     return newCase;
   }
 
@@ -57,11 +70,51 @@ class CaseService {
     return retrievedCase.reload();
   }
 
+  public async getBySuitNumber(suitNumber: string): Promise<Case> {
+    const caseExists = await this.CaseModel.findOne({
+      where: { suitNumber },
+      include: [
+        {
+          model: Court,
+          as: 'court',
+          include: ['type', 'address'],
+        },
+        'documents',
+        'adjournments',
+        'reports',
+        {
+          model: Case,
+          as: 'interlocutories',
+          include: [
+            {
+              model: Court,
+              as: 'court',
+              include: ['type', 'address'],
+            },
+            'verdict',
+          ],
+        },
+        'verdict',
+        {
+          model: CaseNote,
+          as: 'notes',
+          include: ['to', 'from'],
+        },
+      ],
+    });
+
+    if (!caseExists) throw new NotFoundError('Case not found.');
+
+    return caseExists;
+  }
+
   private async checkSuitNumber(suitNumber: string): Promise<Case> {
     const caseExists = await this.CaseModel.findOne({
       where: { suitNumber },
     });
+
     if (caseExists) throw new ConflictError('Suit number already exists.');
+
     return caseExists;
   }
 
@@ -96,13 +149,18 @@ class CaseService {
         },
       ],
     });
+
     if (!retrievedCase) throw new NotFoundError('Case not found.');
+
     return retrievedCase;
   }
 
-  public async getAll(opts: QueryOptions): Promise<{ result: Case[]; totalCount: number; }> {
+  public async getAll(
+    opts: QueryOptions,
+  ): Promise<{ result: Case[]; totalCount: number }> {
     const { limit, offset, status, type, search } = opts;
-    const where: WhereOptions<InferAttributes<Case, { omit: never; }>> = {
+
+    const where: WhereOptions<InferAttributes<Case, { omit: never }>> = {
       [Op.or]: {
         suitNumber: { [Op.like]: search ? `%${search}%` : '%' },
         initiatingParties: { [Op.like]: search ? `%${search}%` : '%' },
@@ -111,8 +169,10 @@ class CaseService {
         originatingOrganisation: { [Op.like]: search ? `%${search}%` : '%' },
       },
     };
+
     status ? (where['status'] = status) : where;
     type ? (where['type'] = type) : where;
+
     const { rows, count } = await this.CaseModel.findAndCountAll({
       where: where,
       include: [
@@ -126,45 +186,60 @@ class CaseService {
       offset: offset,
       order: [['createdAt', 'DESC']],
     });
+
     return { result: rows, totalCount: count };
   }
 
   private async getById(id: number): Promise<Case> {
     const caseExists = await this.CaseModel.findByPk(id);
+
     if (!caseExists) throw new NotFoundError('Case not found.');
+
     return caseExists;
   }
 
   public async createAdjournment(data: unknown): Promise<CaseAdjournment> {
-    const attributes = await caseUtil.caseAdjournmentCreationSchema.validateAsync(data);
+    const attributes =
+      await caseUtil.caseAdjournmentCreationSchema.validateAsync(data);
+
     const { caseId } = attributes;
+
     await this.getById(caseId);
+
     const caseAdjournment = await this.CaseAdjournmentModel.create(attributes);
     return caseAdjournment;
   }
 
   public async createVerdict(data: unknown): Promise<CaseVerdict> {
-    const attributes = await caseUtil.caseVerdictCreationSchema.validateAsync(data);
+    const attributes = await caseUtil.caseVerdictCreationSchema.validateAsync(
+      data,
+    );
+
     const { caseId } = attributes;
+
     await this.getById(caseId);
+
     const caseVerdict = await this.CaseVerdictModel.create(attributes);
+
     await this.updateCaseStatus(caseId, CaseStatus['verdict/judgement-passed']);
     return caseVerdict;
   }
 
-  private async updateCaseStatus(id: number, status: CaseStatus): Promise<void> {
+  private async updateCaseStatus(
+    id: number,
+    status: CaseStatus,
+  ): Promise<void> {
     await this.CaseModel.update({ status }, { where: { id } });
   }
 
   public async createNote(userId: number, data: unknown): Promise<CaseNote> {
-    const {
-      caseId, toId, content,
-    } = await caseUtil.caseNoteCreationSchema.validateAsync(data);
+    const { caseId, toId, content } =
+      await caseUtil.caseNoteCreationSchema.validateAsync(data);
+
     const attributes = { caseId, fromId: userId, toId, content };
-    await Promise.all([
-      this.getById(caseId),
-      userService.getById(toId),
-    ]);
+
+    await Promise.all([this.getById(caseId), userService.getById(toId)]);
+
     const caseNote = await this.CaseNoteModel.create(attributes);
     return caseNote;
   }
@@ -173,60 +248,81 @@ class CaseService {
     const caseNote = await this.CaseNoteModel.findByPk(id, {
       include: ['case', 'to', 'from'],
     });
+
     if (!caseNote) throw new NotFoundError('Case not not found.');
+
     return caseNote;
   }
 
   public async createReport(data: unknown): Promise<CaseReport> {
-    const attributes = await caseUtil.caseReportCreationSchema.validateAsync(data);
+    const attributes = await caseUtil.caseReportCreationSchema.validateAsync(
+      data,
+    );
+
     const { caseId } = attributes;
+
     await this.getById(caseId);
+
     const caseReport = await this.CaseReportModel.create(attributes);
     return caseReport;
   }
 
   public async createDocument(data: unknown): Promise<CaseDocument> {
-    const attributes = await caseUtil.caseDocumentCreationSchema.validateAsync(data);
+    const attributes = await caseUtil.caseDocumentCreationSchema.validateAsync(
+      data,
+    );
+
     const { caseId } = attributes;
+
     await this.getById(caseId);
+
     const caseDocument = await this.CaseDocumentModel.create(attributes);
     return caseDocument;
   }
 
   public async deleteDocument(id: number): Promise<CaseDocument> {
     const caseDocument = await this.CaseDocumentModel.findByPk(id);
+
     if (!caseDocument) throw new NotFoundError('Case document not found.');
+
     await caseDocument.destroy();
     fileService.delete(caseDocument.path);
     return caseDocument;
   }
 
-  public async getDashboardStatistics(isAdmin: boolean, accessLevel: AccessLevel): Promise<any[]> {
+  public async getDashboardStatistics(
+    isAdmin: boolean,
+    accessLevel: AccessLevel,
+  ): Promise<any[]> {
     const statistics = [];
     if (
-      [
-        'registrar', 'lawyer', 'director',
-        'permanent-secretary',
-      ].includes(accessLevel) || isAdmin
+      ['registrar', 'lawyer', 'director', 'permanent-secretary'].includes(
+        accessLevel,
+      ) ||
+      isAdmin
     ) {
       const allCase = await this.getAllCaseStats();
       const activeCase = await this.getActiveCaseStats();
-      const caseDistributionByDepartment = await this.getCaseDistributionByDepartmentStats();
+      const caseDistributionByDepartment =
+        await this.getCaseDistributionByDepartmentStats();
       statistics.push({ allCase, activeCase, caseDistributionByDepartment });
     }
 
-    if ([ 'attorney-general'].includes(accessLevel) || isAdmin) {
+    if (['attorney-general'].includes(accessLevel) || isAdmin) {
       const civilCase = await this.getCaseStatsByType(CaseType.civil);
       const appealCase = await this.getCaseStatsByType(CaseType.appeal);
       const criminalCase = await this.getCaseStatsByType(CaseType.criminal);
       statistics.push({ civilCase, appealCase, criminalCase });
     }
+
     return statistics[0];
   }
 
   private async getAllCaseStats() {
     const count = await this.CaseModel.count();
+
     const { currentDate, lastMonthDate } = helperUtil.getStartAndEndOfMonth();
+
     const lastMonthCount = await this.CaseModel.count({
       where: {
         createdAt: {
@@ -235,6 +331,7 @@ class CaseService {
         },
       },
     });
+
     const difference = count - lastMonthCount;
     return { count, difference };
   }
@@ -243,7 +340,9 @@ class CaseService {
     const count = await this.CaseModel.count({
       where: { status: { [Op.ne]: CaseStatus['verdict/judgement-passed'] } },
     });
+
     const { currentDate, lastMonthDate } = helperUtil.getStartAndEndOfMonth();
+
     const lastMonthCount = await this.CaseModel.count({
       where: {
         status: { [Op.ne]: CaseStatus['verdict/judgement-passed'] },
@@ -253,16 +352,14 @@ class CaseService {
         },
       },
     });
+
     const percentage = (count / lastMonthCount) * 100;
     return { count, percentage };
   }
 
   private async getCaseDistributionByDepartmentStats() {
     const caseDistribution = await this.CaseModel.findAll({
-      attributes: [
-        'type',
-        [fn('COUNT', col('*')), 'count'], 
-      ],
+      attributes: ['type', [fn('COUNT', col('*')), 'count']],
       group: 'type',
       order: [[fn('COUNT', col('*')), 'desc']],
     });
@@ -273,7 +370,9 @@ class CaseService {
     const count = await this.CaseModel.count({
       where: { type },
     });
+
     const { currentDate, lastMonthDate } = helperUtil.getStartAndEndOfMonth();
+
     const lastMonthCount = await this.CaseModel.count({
       where: {
         type,
@@ -283,6 +382,7 @@ class CaseService {
         },
       },
     });
+
     const difference = count - lastMonthCount;
     return { count, difference };
   }
