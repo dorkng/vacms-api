@@ -6,7 +6,10 @@ import {
   Model,
   Sequelize,
 } from 'sequelize';
-import { IAwaitingTrialInmateAttribute } from '../../interfaces/inmate.interface';
+import {
+  IAwaitingTrialInmateAttribute,
+  InmateSexType,
+} from '../../interfaces/inmate.interface';
 import { Court, CustodialFacility, ProsecutingAgency } from './index';
 
 class AwaitingTrialInmate
@@ -25,7 +28,7 @@ class AwaitingTrialInmate
 
   declare image: string;
 
-  declare sex: string;
+  declare sex: InmateSexType;
 
   declare custodyNumber?: string;
 
@@ -73,7 +76,7 @@ export function init(connection: Sequelize) {
         allowNull: false,
       },
       sex: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM(...Object.values(InmateSexType)),
         allowNull: false,
       },
       custodyNumber: {

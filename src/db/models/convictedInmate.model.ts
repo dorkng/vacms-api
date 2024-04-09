@@ -6,7 +6,10 @@ import {
   Model,
   Sequelize,
 } from 'sequelize';
-import { IConvictedInmateAttribute } from '../../interfaces/inmate.interface';
+import {
+  IConvictedInmateAttribute,
+  InmateSexType,
+} from '../../interfaces/inmate.interface';
 import { Court, CustodialFacility, ProsecutingAgency } from './index';
 
 class ConvictedInmate
@@ -25,7 +28,7 @@ class ConvictedInmate
 
   declare image: string;
 
-  declare sex: string;
+  declare sex: InmateSexType;
 
   declare custodyNumber?: string;
 
@@ -79,7 +82,7 @@ export function init(connection: Sequelize) {
         allowNull: false,
       },
       sex: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM(...Object.values(InmateSexType)),
         allowNull: false,
       },
       custodyNumber: {

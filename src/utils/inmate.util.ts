@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { InmateSexType } from '../interfaces/inmate.interface';
 
 class InmateUtil {
   private allowedData = ['', null];
@@ -10,7 +11,10 @@ class InmateUtil {
       .allow(...this.allowedData)
       .label('Other Name'),
     image: Joi.string().required().label('Image'),
-    sex: Joi.string().required().label('Sex'),
+    sex: Joi.string()
+      .valid(...Object.values(InmateSexType))
+      .required()
+      .label('Sex'),
     custodyNumber: Joi.string()
       .allow(...this.allowedData)
       .label('Custody Number'),
@@ -44,7 +48,10 @@ class InmateUtil {
       .allow(...this.allowedData)
       .label('Other Name'),
     image: Joi.string().required().label('Image'),
-    sex: Joi.string().required().label('Sex'),
+    sex: Joi.string()
+      .valid(...Object.values(InmateSexType))
+      .required()
+      .label('Sex'),
     custodyNumber: Joi.string()
       .allow(...this.allowedData)
       .label('Custody Number'),
@@ -88,7 +95,11 @@ class InmateUtil {
         .allow(...this.allowedData)
         .label('Other Name'),
       Image: Joi.string().required().label('Image'),
-      Sex: Joi.string().required().label('Sex'),
+      Sex: Joi.string()
+        .uppercase()
+        .valid(...Object.values(InmateSexType))
+        .required()
+        .label('Sex'),
       'Custody Number': Joi.string()
         .allow(...this.allowedData)
         .label('Custody Number'),
@@ -127,7 +138,11 @@ class InmateUtil {
         .allow(...this.allowedData)
         .label('Other Name'),
       Image: Joi.string().required().label('Image'),
-      Sex: Joi.string().required().label('Sex'),
+      Sex: Joi.string()
+        .uppercase()
+        .valid(...Object.values(InmateSexType))
+        .required()
+        .label('Sex'),
       'Custody Number': Joi.string()
         .allow(...this.allowedData)
         .label('Custody Number'),
@@ -178,6 +193,7 @@ class InmateUtil {
       .allow(...this.allowedData)
       .label('Image'),
     sex: Joi.string()
+      .valid(...Object.values(InmateSexType))
       .allow(...this.allowedData)
       .label('Sex'),
     custodyNumber: Joi.string()
@@ -226,6 +242,7 @@ class InmateUtil {
       .allow(...this.allowedData)
       .label('Image'),
     sex: Joi.string()
+      .valid(...Object.values(InmateSexType))
       .allow(...this.allowedData)
       .label('Sex'),
     custodyNumber: Joi.string()

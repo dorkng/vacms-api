@@ -1,10 +1,15 @@
+export enum InmateSexType {
+  MALE = 'M',
+  FEMALE = 'F',
+}
+
 export interface IAwaitingTrialInmateAttribute {
   id: number;
   firstName: string;
   lastName: string;
   otherName?: string;
   image: string;
-  sex: string;
+  sex: InmateSexType;
   custodyNumber?: string;
   custodialFacilityId: number;
   caseNumber?: string;
@@ -23,7 +28,7 @@ export interface IConvictedInmateAttribute {
   lastName: string;
   otherName?: string;
   image: string;
-  sex: string;
+  sex: InmateSexType;
   custodyNumber?: string;
   custodialFacilityId: number;
   caseNumber?: string;

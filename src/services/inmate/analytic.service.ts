@@ -5,7 +5,7 @@ import {
   ConvictedInmate,
   CustodialFacility,
 } from '../../db/models';
-import { InmateSex } from '../../interfaces/inmate.interface';
+import { InmateSexType } from '../../interfaces/inmate.interface';
 
 class InmateAnalytic {
   private awaitingTrialModel = AwaitingTrialInmate;
@@ -151,9 +151,9 @@ class InmateAnalytic {
         data[stateName] = { male: 0, female: 0 };
       }
 
-      if (gender === InmateSex.MALE) {
+      if (gender === InmateSexType.MALE) {
         data[stateName].male += count;
-      } else if (gender === InmateSex.FEMALE) {
+      } else if (gender === InmateSexType.FEMALE) {
         data[stateName].female += count;
       }
     });
