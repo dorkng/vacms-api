@@ -173,6 +173,10 @@ class ConvictedInmateService {
     return { result: rows, totalCount: count };
   }
 
+  public async getTotalCount() {
+    return this.convictedInmateModel.count();
+  }
+
   public async update(id: number, data: unknown): Promise<ConvictedInmate> {
     const {
       firstName,

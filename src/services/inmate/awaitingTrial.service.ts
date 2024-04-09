@@ -171,6 +171,10 @@ class AwaitingTrialInmateService {
     return { result: rows, totalCount: count };
   }
 
+  public async getTotalCount() {
+    return this.awaitingTrialInmateModel.count();
+  }
+
   public async update(id: number, data: unknown): Promise<AwaitingTrialInmate> {
     const {
       firstName,

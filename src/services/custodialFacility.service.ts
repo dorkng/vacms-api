@@ -107,6 +107,17 @@ class CustodialFacilityService {
     return { result: rows, totalCount: count };
   }
 
+  public async getDashboardData(): Promise<{
+    sumOfCapacity: number;
+    totalCount: number;
+  }> {
+    const sumOfCapacity = await this.custodialFacilityModel.sum('capacity');
+
+    const totalCount = await this.custodialFacilityModel.count();
+
+    return { sumOfCapacity, totalCount };
+  }
+
   public async update(id: number, data: unknown): Promise<CustodialFacility> {
     const { name, capacity, stateId } =
       await custodialFacilityUtil.custodialFacilityUpdateSchema.validateAsync(

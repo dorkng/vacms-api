@@ -1,11 +1,25 @@
 import { Router } from 'express';
-import {
+import CustodialFacilityMetaController, {
   CustodialFacilityController,
   CustodialFacilityBulkController,
 } from '../controllers/custodialFacility';
 import authMiddleware from '../middlewares/auth.middleware';
 import systemMiddleware from '../middlewares/system.middleware';
 import fileMiddleware from '../middlewares/file.middleware';
+
+class CustodialFacilityMetaRoutes extends CustodialFacilityMetaController {
+  router: Router;
+
+  constructor() {
+    super();
+    this.router = Router();
+    this.routes();
+  }
+
+  private routes(): void {
+    this.router.get('/', this.index);
+  }
+}
 
 class BulkRoutes extends CustodialFacilityBulkController {
   public router: Router;
@@ -34,6 +48,12 @@ class CustodialFacilityRoutes extends CustodialFacilityController {
   }
 
   private routes(): void {
+    this.router.use(
+      '/meta',
+      authMiddleware.validateSuperAdminAccess,
+      new CustodialFacilityMetaRoutes().router,
+    );
+
     this.router.use(
       '/bulk',
       authMiddleware.validateSuperAdminAccess,
