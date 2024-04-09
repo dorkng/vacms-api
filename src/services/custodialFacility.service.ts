@@ -75,6 +75,14 @@ class CustodialFacilityService {
     return custodialFacility;
   }
 
+  public async getByName(name: string): Promise<State> {
+    const label = helperUtil.getLabel(name);
+
+    return this.custodialFacilityModel.findOne({
+      where: { label },
+    });
+  }
+
   public async getAll(
     opts: QueryOptions,
   ): Promise<{ result: CustodialFacility[]; totalCount: number }> {

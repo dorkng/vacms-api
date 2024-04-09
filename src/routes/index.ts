@@ -7,6 +7,7 @@ import courtRoutes from './court.route';
 import custodialFacilityRoutes from './custodialFacility.route';
 import departmentRoutes from './department.route';
 import fileRoutes from './file.route';
+import inmateRoutes from './inmate';
 import prosecutingAgencyRoutes from './prosecutingAgency.route';
 import stateRoutes from './state.route';
 import userRoutes from './user.route';
@@ -47,6 +48,8 @@ class Routes {
     this.router.use('/department', departmentRoutes);
 
     this.router.use('/file', fileRoutes);
+
+    this.router.use('/inmate', inmateRoutes);
 
     this.router.use('/state', stateRoutes);
 

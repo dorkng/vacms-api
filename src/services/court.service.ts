@@ -51,6 +51,14 @@ class CourtService {
     return court;
   }
 
+  public async getByName(name: string): Promise<State> {
+    const label = helperUtil.getLabel(name);
+
+    return this.CourtModel.findOne({
+      where: { label },
+    });
+  }
+
   public async getAll(
     limit: number,
     offset: number,

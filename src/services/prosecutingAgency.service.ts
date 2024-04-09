@@ -75,6 +75,14 @@ class ProsecutingAgencyService {
     return prosecutingAgency;
   }
 
+  public async getByName(name: string): Promise<State> {
+    const label = helperUtil.getLabel(name);
+
+    return this.prosecutingAgencyModel.findOne({
+      where: { label },
+    });
+  }
+
   public async getAll(
     opts: QueryOptions,
   ): Promise<{ result: ProsecutingAgency[]; totalCount: number }> {

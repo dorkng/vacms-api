@@ -68,7 +68,28 @@ class CsvUtil {
         'Prosecuting Agency',
         'Date of Arraignment',
         'Date of Admission',
-        'Other Means Of Id',
+        'Other Means of Identification',
+      ];
+    } else if (type === CsvFileParseType.CONVICTED_INMATE) {
+      expectedHeaders = [
+        'First Name',
+        'Last Name',
+        'Other Name',
+        'Image',
+        'Sex',
+        'Custody Number',
+        'Custodial Facility',
+        'Case Number',
+        'Court',
+        'Offense',
+        'Offense Interpretation',
+        'Prosecuting Agency',
+        'EDR',
+        'LDR',
+        'Compensation',
+        'Sentence',
+        'Option of Fine',
+        'Date of Conviction',
       ];
     } else if (type === CsvFileParseType.CUSTODIAL_FACILITY) {
       expectedHeaders = ['Name', 'Capacity', 'State'];
