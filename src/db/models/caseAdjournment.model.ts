@@ -7,9 +7,13 @@ import {
   Sequelize,
 } from 'sequelize';
 import { ICaseAdjournmentAttribute } from '../../interfaces/case.interface';
+import { Case } from './index';
 
 class CaseAdjournment
-  extends Model<InferAttributes<CaseAdjournment>, InferCreationAttributes<CaseAdjournment>>
+  extends Model<
+  InferAttributes<CaseAdjournment>,
+  InferCreationAttributes<CaseAdjournment>
+  >
   implements ICaseAdjournmentAttribute {
   declare id: CreationOptional<number>;
 
@@ -47,6 +51,18 @@ export function init(connection: Sequelize) {
       sequelize: connection,
     },
   );
+}
+
+export function associate() {
+  CaseAdjournment.belongsTo(Case, {
+    foreignKey: {
+      allowNull: false,
+      name: 'caseId',
+      field: 'caseId',
+    },
+    onDelete: 'CASCADE',
+    as: 'case',
+  });
 }
 
 export default CaseAdjournment;

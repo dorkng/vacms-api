@@ -6,7 +6,19 @@ import {
   Model,
   Sequelize,
 } from 'sequelize';
-import { ICaseAttribute, CaseType, CaseStatus } from '../../interfaces/case.interface';
+import {
+  ICaseAttribute,
+  CaseType,
+  CaseStatus,
+} from '../../interfaces/case.interface';
+import {
+  CaseAdjournment,
+  CaseDocument,
+  CaseNote,
+  CaseReport,
+  CaseVerdict,
+  Court,
+} from './index';
 
 class Case
   extends Model<InferAttributes<Case>, InferCreationAttributes<Case>>
@@ -92,6 +104,78 @@ export function init(connection: Sequelize) {
       sequelize: connection,
     },
   );
+}
+
+export function associate() {
+  Case.belongsTo(Court, {
+    foreignKey: {
+      allowNull: false,
+      name: 'courtId',
+      field: 'courtId',
+    },
+    as: 'court',
+    onDelete: 'CASCADE',
+  });
+
+  Case.hasMany(Case, {
+    foreignKey: {
+      allowNull: true,
+      name: 'parentCaseId',
+      field: 'parentCaseId',
+    },
+    onDelete: 'CASCADE',
+    as: 'interlocutories',
+  });
+
+  Case.hasMany(CaseAdjournment, {
+    foreignKey: {
+      allowNull: false,
+      name: 'caseId',
+      field: 'caseId',
+    },
+    onDelete: 'CASCADE',
+    as: 'adjournments',
+  });
+
+  Case.hasMany(CaseDocument, {
+    foreignKey: {
+      allowNull: false,
+      name: 'caseId',
+      field: 'caseId',
+    },
+    onDelete: 'CASCADE',
+    as: 'documents',
+  });
+
+  Case.hasMany(CaseReport, {
+    foreignKey: {
+      allowNull: false,
+      name: 'caseId',
+      field: 'caseId',
+    },
+    onDelete: 'CASCADE',
+    as: 'reports',
+  });
+
+  Case.hasMany(CaseNote, {
+    foreignKey: {
+      allowNull: false,
+      name: 'caseId',
+      field: 'caseId',
+    },
+    onDelete: 'CASCADE',
+    as: 'notes',
+  });
+
+  Case.hasOne(CaseVerdict, {
+    foreignKey: {
+      allowNull: false,
+      name: 'caseId',
+      field: 'caseId',
+    },
+    onDelete: 'CASCADE',
+    as: 'verdict',
+  });
 }
 
 export default Case;

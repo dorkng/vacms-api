@@ -2,11 +2,15 @@ import express, { Router, Request, Response } from 'express';
 import { NotFoundError } from '../errors';
 import authMiddleware from '../middlewares/auth.middleware';
 import authRoutes from './auth.route';
-import departmentRoutes from './department.route';
-import courtRoutes from './court.route';
-import userRoutes from './user.route';
-import fileRoutes from './file.route';
 import caseRoutes from './case.route';
+import courtRoutes from './court.route';
+import custodialFacilityRoutes from './custodialFacility.route';
+import departmentRoutes from './department.route';
+import fileRoutes from './file.route';
+import inmateRoutes from './inmate';
+import prosecutingAgencyRoutes from './prosecutingAgency.route';
+import stateRoutes from './state.route';
+import userRoutes from './user.route';
 
 class Routes {
   public router: Router;
@@ -35,13 +39,21 @@ class Routes {
 
     this.router.use(authMiddleware.validateUserToken);
 
-    this.router.use('/file', fileRoutes);
-
-    this.router.use('/department', departmentRoutes);
+    this.router.use('/case', caseRoutes);
 
     this.router.use('/court', courtRoutes);
 
-    this.router.use('/case', caseRoutes);
+    this.router.use('/custodial-facility', custodialFacilityRoutes);
+
+    this.router.use('/department', departmentRoutes);
+
+    this.router.use('/file', fileRoutes);
+
+    this.router.use('/inmate', inmateRoutes);
+
+    this.router.use('/state', stateRoutes);
+
+    this.router.use('/prosecuting-agency', prosecutingAgencyRoutes);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.router.use('*', (req: Request, res: Response) => {

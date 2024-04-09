@@ -7,9 +7,13 @@ import {
   Sequelize,
 } from 'sequelize';
 import { ICaseReportAttribute } from '../../interfaces/case.interface';
+import { Case } from './index';
 
 class CaseReport
-  extends Model<InferAttributes<CaseReport>, InferCreationAttributes<CaseReport>>
+  extends Model<
+  InferAttributes<CaseReport>,
+  InferCreationAttributes<CaseReport>
+  >
   implements ICaseReportAttribute {
   declare id: CreationOptional<number>;
 
@@ -41,6 +45,18 @@ export function init(connection: Sequelize) {
       sequelize: connection,
     },
   );
+}
+
+export function associate() {
+  CaseReport.belongsTo(Case, {
+    foreignKey: {
+      allowNull: false,
+      name: 'caseId',
+      field: 'caseId',
+    },
+    onDelete: 'CASCADE',
+    as: 'case',
+  });
 }
 
 export default CaseReport;

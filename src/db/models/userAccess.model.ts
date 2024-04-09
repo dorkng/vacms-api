@@ -6,10 +6,17 @@ import {
   Model,
   Sequelize,
 } from 'sequelize';
-import { AccessLevel, IUserAccessAttribute } from '../../interfaces/user.interface';
+import {
+  AccessLevel,
+  IUserAccessAttribute,
+} from '../../interfaces/user.interface';
+import { Department, User } from './index';
 
 class UserAccess
-  extends Model<InferAttributes<UserAccess>, InferCreationAttributes<UserAccess>>
+  extends Model<
+  InferAttributes<UserAccess>,
+  InferCreationAttributes<UserAccess>
+  >
   implements IUserAccessAttribute {
   declare id: CreationOptional<number>;
 
@@ -34,7 +41,13 @@ export function init(connection: Sequelize) {
         unique: true,
       },
       accessLevel: {
-        type: DataTypes.ENUM('registrar', 'lawyer', 'director', 'permanent-secretary', 'attorney-general'),
+        type: DataTypes.ENUM(
+          'registrar',
+          'lawyer',
+          'director',
+          'permanent-secretary',
+          'attorney-general',
+        ),
         allowNull: false,
       },
       departmentId: {
@@ -48,6 +61,26 @@ export function init(connection: Sequelize) {
       sequelize: connection,
     },
   );
+}
+
+export function associate() {
+  UserAccess.belongsTo(User, {
+    foreignKey: {
+      allowNull: false,
+      name: 'userId',
+      field: 'userId',
+    },
+    as: 'user',
+  });
+
+  UserAccess.belongsTo(Department, {
+    foreignKey: {
+      allowNull: true,
+      name: 'departmentId',
+      field: 'departmentId',
+    },
+    as: 'department',
+  });
 }
 
 export default UserAccess;

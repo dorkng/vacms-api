@@ -9,7 +9,7 @@ export interface ICourtAddressAttribute {
   id: number;
   street: string;
   city: string;
-  state: string;
+  stateId: number;
 }
 
 export interface ICourtAttribute {

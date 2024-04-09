@@ -1,228 +1,135 @@
 import { Sequelize } from 'sequelize/types';
-import Case, { init as initCase } from './case.model';
+import AwaitingTrialInmate, {
+  init as initAwaitingTrialInmate,
+  associate as associateAwaitingTrialInmate,
+} from './awaitingTrialInmate.model';
+import Case, {
+  init as initCase,
+  associate as associateCase,
+} from './case.model';
 import CaseAdjournment, {
   init as initCaseAdjournment,
+  associate as associateCaseAdjournment,
 } from './caseAdjournment.model';
-import CaseDocument, { init as initCaseDocument } from './caseDocument.model';
-import CaseNote, { init as initCaseNote } from './caseNote.model';
-import CaseReport, { init as initCaseReport } from './caseReport.model';
-import CaseVerdict, { init as initCaseVerdict } from './caseVerdict.model';
-import Court, { init as initCourt } from './court.model';
-import CourtAddress, { init as initCourtAddress } from './courtAddress.model';
+import CaseDocument, {
+  init as initCaseDocument,
+  associate as associateCaseDocument,
+} from './caseDocument.model';
+import CaseNote, {
+  init as initCaseNote,
+  associate as associateCaseNote,
+} from './caseNote.model';
+import CaseReport, {
+  init as initCaseReport,
+  associate as associateCaseReport,
+} from './caseReport.model';
+import CaseVerdict, {
+  init as initCaseVerdict,
+  associate as associateCaseVerdict,
+} from './caseVerdict.model';
+import ConvictedInmate, {
+  init as initConvictedInmate,
+  associate as associateConvictedInmate,
+} from './convictedInmate.model';
+import Court, {
+  init as initCourt,
+  associate as associateCourt,
+} from './court.model';
+import CourtAddress, {
+  init as initCourtAddress,
+  associate as associateCourtAddress,
+} from './courtAddress.model';
 import CourtType, { init as initCourtType } from './courtType.model';
+import CustodialFacility, {
+  init as initCustodialFacility,
+  associate as associateCustodialFacility,
+} from './custodialFacility.model';
 import Department, { init as initDepartment } from './department.model';
-import User, { init as initUser } from './user.model';
-import UserAccess, { init as initUserAccess } from './userAccess.model';
+import ProsecutingAgency, {
+  init as initProsecutingAgency,
+  associate as associateProsecutingAgency,
+} from './prosecutingAgency.model';
+import State, { init as initState } from './state.model';
+import User, {
+  init as initUser,
+  associate as associateUser,
+} from './user.model';
+import UserAccess, {
+  init as initUserAccess,
+  associate as associateUserAccess,
+} from './userAccess.model';
 import UserVerification, {
   init as initUserVerification,
 } from './userVerification.model';
 
 function associate() {
+  // Awaiting Trial Inmate Relationships
+  associateAwaitingTrialInmate();
   // Case Relationships
-  Case.belongsTo(Court, {
-    foreignKey: {
-      allowNull: false,
-      name: 'courtId',
-      field: 'courtId',
-    },
-    as: 'court',
-    onDelete: 'CASCADE',
-  });
-  Case.hasMany(Case, {
-    foreignKey: {
-      allowNull: true,
-      name: 'parentCaseId',
-      field: 'parentCaseId',
-    },
-    onDelete: 'CASCADE',
-    as: 'interlocutories',
-  });
-  Case.hasMany(CaseAdjournment, {
-    foreignKey: {
-      allowNull: false,
-      name: 'caseId',
-      field: 'caseId',
-    },
-    onDelete: 'CASCADE',
-    as: 'adjournments',
-  });
-  Case.hasMany(CaseDocument, {
-    foreignKey: {
-      allowNull: false,
-      name: 'caseId',
-      field: 'caseId',
-    },
-    onDelete: 'CASCADE',
-    as: 'documents',
-  });
-  Case.hasMany(CaseReport, {
-    foreignKey: {
-      allowNull: false,
-      name: 'caseId',
-      field: 'caseId',
-    },
-    onDelete: 'CASCADE',
-    as: 'reports',
-  });
-  Case.hasMany(CaseNote, {
-    foreignKey: {
-      allowNull: false,
-      name: 'caseId',
-      field: 'caseId',
-    },
-    onDelete: 'CASCADE',
-    as: 'notes',
-  });
-  Case.hasOne(CaseVerdict, {
-    foreignKey: {
-      allowNull: false,
-      name: 'caseId',
-      field: 'caseId',
-    },
-    onDelete: 'CASCADE',
-    as: 'verdict',
-  });
+  associateCase();
   // Case Adjournment Relationships
-  CaseAdjournment.belongsTo(Case, {
-    foreignKey: {
-      allowNull: false,
-      name: 'caseId',
-      field: 'caseId',
-    },
-    onDelete: 'CASCADE',
-    as: 'case',
-  });
+  associateCaseAdjournment();
   // Case Document Relationships
-  CaseDocument.belongsTo(Case, {
-    foreignKey: {
-      allowNull: false,
-      name: 'caseId',
-      field: 'caseId',
-    },
-    onDelete: 'CASCADE',
-    as: 'case',
-  });
+  associateCaseDocument();
   // Case Note Relationships
-  CaseNote.belongsTo(Case, {
-    foreignKey: {
-      allowNull: false,
-      name: 'caseId',
-      field: 'caseId',
-    },
-    onDelete: 'CASCADE',
-    as: 'case',
-  });
-  CaseNote.belongsTo(User, {
-    foreignKey: {
-      allowNull: false,
-      name: 'toId',
-      field: 'toId',
-    },
-    onDelete: 'CASCADE',
-    as: 'to',
-  });
-  CaseNote.belongsTo(User, {
-    foreignKey: {
-      allowNull: false,
-      name: 'fromId',
-      field: 'fromId',
-    },
-    as: 'from',
-  });
+  associateCaseNote();
   // Case Report Relationships
-  CaseReport.belongsTo(Case, {
-    foreignKey: {
-      allowNull: false,
-      name: 'caseId',
-      field: 'caseId',
-    },
-    onDelete: 'CASCADE',
-    as: 'case',
-  });
+  associateCaseReport();
   // Case Verdict Relationships
-  CaseVerdict.belongsTo(Case, {
-    foreignKey: {
-      allowNull: false,
-      name: 'caseId',
-      field: 'caseId',
-    },
-    onDelete: 'CASCADE',
-    as: 'case',
-  });
+  associateCaseVerdict();
+  // Convicted Inmate Relationships
+  associateConvictedInmate();
   // Court Relationships
-  Court.belongsTo(CourtType, {
-    foreignKey: {
-      allowNull: false,
-      name: 'typeId',
-      field: 'typeId',
-    },
-    onDelete: 'CASCADE',
-    as: 'type',
-  });
-  Court.belongsTo(CourtAddress, {
-    foreignKey: {
-      allowNull: false,
-      name: 'addressId',
-      field: 'addressId',
-    },
-    onDelete: 'CASCADE',
-    as: 'address',
-  });
+  associateCourt();
+  // Court Address Relationships
+  associateCourtAddress();
+  // Custodial Facility Relationships
+  associateCustodialFacility();
+  // Prosecuting Agency Relationships
+  associateProsecutingAgency();
   // User Relationships
-  User.hasOne(UserAccess, {
-    foreignKey: {
-      allowNull: false,
-      name: 'userId',
-      field: 'userId',
-    },
-    as: 'access',
-  });
+  associateUser();
   // User Access Relationships
-  UserAccess.belongsTo(User, {
-    foreignKey: {
-      allowNull: false,
-      name: 'userId',
-      field: 'userId',
-    },
-    as: 'user',
-  });
-  UserAccess.belongsTo(Department, {
-    foreignKey: {
-      allowNull: true,
-      name: 'departmentId',
-      field: 'departmentId',
-    },
-    as: 'department',
-  });
+  associateUserAccess();
 }
 
 export {
+  AwaitingTrialInmate,
   Case,
   CaseAdjournment,
   CaseDocument,
   CaseNote,
   CaseReport,
   CaseVerdict,
+  ConvictedInmate,
   Court,
+  CustodialFacility,
   CourtAddress,
   CourtType,
   Department,
+  ProsecutingAgency,
+  State,
   User,
   UserAccess,
   UserVerification,
 };
 
 export function init(connection: Sequelize) {
+  initAwaitingTrialInmate(connection);
   initCase(connection);
   initCaseAdjournment(connection);
   initCaseDocument(connection);
   initCaseNote(connection);
   initCaseReport(connection);
   initCaseVerdict(connection);
+  initConvictedInmate(connection);
   initCourt(connection);
   initCourtAddress(connection);
   initCourtType(connection);
+  initCustodialFacility(connection);
   initDepartment(connection);
+  initProsecutingAgency(connection);
+  initState(connection);
   initUser(connection);
   initUserAccess(connection);
   initUserVerification(connection);

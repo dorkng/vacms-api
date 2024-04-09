@@ -9,12 +9,19 @@ class HelperUtil {
     return { currentPage, totalPages, previousPage, nextPage };
   }
 
-  public getStartAndEndOfMonth(): { currentDate: Date, lastMonthDate: Date } {
+  public getStartAndEndOfMonth(): { currentDate: Date; lastMonthDate: Date } {
     const currentDateAndTime = new Date();
-    const lastMonthDateAndTime = moment(currentDateAndTime).subtract(1, 'month').toDate();
+    const lastMonthDateAndTime = moment(currentDateAndTime)
+      .subtract(1, 'month')
+      .toDate();
     const currentDate = this.setFormattedDate('00:00', currentDateAndTime);
     const lastMonthDate = this.setFormattedDate('23:59', lastMonthDateAndTime);
-    return { currentDate, lastMonthDate }; 
+    return { currentDate, lastMonthDate };
+  }
+
+  public getLabel(name: string): string {
+    const label = name.replace(/([^\w ]|_)/g, '');
+    return `${label.replace(/\s+/g, '-').toLowerCase()}`;
   }
 
   private setFormattedDate(time: string, date: Date) {
