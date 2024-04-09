@@ -62,4 +62,35 @@ export function init(connection: Sequelize) {
   );
 }
 
+export function associate() {
+  CaseNote.belongsTo(Case, {
+    foreignKey: {
+      allowNull: false,
+      name: 'caseId',
+      field: 'caseId',
+    },
+    onDelete: 'CASCADE',
+    as: 'case',
+  });
+
+  CaseNote.belongsTo(User, {
+    foreignKey: {
+      allowNull: false,
+      name: 'toId',
+      field: 'toId',
+    },
+    onDelete: 'CASCADE',
+    as: 'to',
+  });
+
+  CaseNote.belongsTo(User, {
+    foreignKey: {
+      allowNull: false,
+      name: 'fromId',
+      field: 'fromId',
+    },
+    as: 'from',
+  });
+}
+
 export default CaseNote;

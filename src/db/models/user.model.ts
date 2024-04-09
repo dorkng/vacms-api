@@ -107,4 +107,15 @@ export function init(connection: Sequelize) {
   );
 }
 
+export function associate() {
+  User.hasOne(UserAccess, {
+    foreignKey: {
+      allowNull: false,
+      name: 'userId',
+      field: 'userId',
+    },
+    as: 'access',
+  });
+}
+
 export default User;

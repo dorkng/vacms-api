@@ -30,13 +30,13 @@ class CourtUtil {
   public courtAddressCreationSchema = Joi.object().keys({
     street: Joi.string().required().label('Street'),
     city: Joi.string().required().label('City'),
-    state: Joi.string().required().label('State'),
+    stateId: Joi.number().min(1).required().label('State'),
   });
   
   public courtAddressUpdateSchema = Joi.object().keys({
-    street: Joi.string().required().label('Street'),
-    city: Joi.string().required().label('City'),
-    state: Joi.string().required().label('State'),
+    street: Joi.string().label('Street'),
+    city: Joi.string().label('City'),
+    stateId: Joi.number().min(1).label('State'),
   });
 }
 

@@ -1,10 +1,11 @@
 import { Sequelize, Options } from 'sequelize';
 import { init as initModels } from './models';
 import serverConfig from '../config/server.config';
+import defaults from './defaults';
 
 class DB {
   public sequelize: Sequelize;
-  
+
   async connectDB() {
     try {
       const options: Options = {
@@ -16,18 +17,28 @@ class DB {
         port: serverConfig.DB_PORT,
         database: serverConfig.DB_NAME,
       };
+
       this.sequelize = new Sequelize(
         serverConfig.DB_NAME,
         serverConfig.DB_USERNAME,
         serverConfig.DB_PASSWORD,
         options,
       );
+
       initModels(this.sequelize);
+
       if (serverConfig.NODE_ENV === 'development') {
         // await this.sequelize.sync({ alter: true });
         // await this.sequelize.sync({ force: true });
         // await this.sequelize.sync();
       }
+
+      if (serverConfig.RUN_DEFAULT_DB_MIGRATION) {
+        await this.sequelize.sync();
+        await defaults.runDataMigration();
+        serverConfig.DEBUG('Completed default data migration.');
+      }
+
       serverConfig.DEBUG('Connected to database.');
       return this.sequelize;
     } catch (error) {
@@ -36,5 +47,5 @@ class DB {
     }
   }
 }
-  
+
 export default new DB();

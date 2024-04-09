@@ -7,9 +7,13 @@ import {
   Sequelize,
 } from 'sequelize';
 import { ICourtAddressAttribute } from '../../interfaces/court.interface';
+import { State } from './index';
 
 class CourtAddress
-  extends Model<InferAttributes<CourtAddress>, InferCreationAttributes<CourtAddress>>
+  extends Model<
+  InferAttributes<CourtAddress>,
+  InferCreationAttributes<CourtAddress>
+  >
   implements ICourtAddressAttribute {
   declare id: CreationOptional<number>;
 
@@ -17,7 +21,7 @@ class CourtAddress
 
   declare city: string;
 
-  declare state: string;
+  declare stateId: number;
 }
 
 export function init(connection: Sequelize) {
@@ -36,8 +40,8 @@ export function init(connection: Sequelize) {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      state: {
-        type: DataTypes.STRING,
+      stateId: {
+        type: DataTypes.INTEGER.UNSIGNED,
         allowNull: false,
       },
     },
@@ -47,6 +51,18 @@ export function init(connection: Sequelize) {
       sequelize: connection,
     },
   );
+}
+
+export function associate() {
+  CourtAddress.belongsTo(State, {
+    foreignKey: {
+      allowNull: false,
+      name: 'stateId',
+      field: 'stateId',
+    },
+    onDelete: 'CASCADE',
+    as: 'state',
+  });
 }
 
 export default CourtAddress;

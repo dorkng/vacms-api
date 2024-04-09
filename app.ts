@@ -38,17 +38,23 @@ class Server {
   // Class methods to build middleware and routes
   private initializeMiddlewaresAndRoutes(): void {
     this.app.use(compression());
+
     if (serverConfig.NODE_ENV === 'development') {
       this.app.use(cors());
     } else {
       this.app.use(cors(this.corsOptions));
     }
+
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
-    this.app.use(helmet());
-    if (['development', 'staging', 'production'].includes(serverConfig.NODE_ENV)) {
+    this.app.use(helmet({ crossOriginResourcePolicy: false }));
+
+    if (
+      ['development', 'staging', 'production'].includes(serverConfig.NODE_ENV)
+    ) {
       this.app.use(morgan('dev'));
     }
+
     this.app.use(routes);
     this.app.use(systemMiddleware.errorHandler);
   }

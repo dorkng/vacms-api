@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import sequelize from 'sequelize';
 import serverConfig from '../config/server.config';
 import { SystemError } from '../errors';
 
@@ -21,6 +22,13 @@ class SystemMiddlewares {
       errorMessage = error;
     }
 
+    if (error instanceof sequelize.UniqueConstraintError) {
+      return res.status(400).json({
+        message: 'This entry already exists.',
+        data: error.errors,
+      });
+    }
+
     return res.status(error.code || 500).json({
       message: error.message,
       data: {
@@ -30,15 +38,19 @@ class SystemMiddlewares {
     });
   }
 
-  public formatRequestQuery(req: Request, res: Response, next: NextFunction ) {
+  public formatRequestQuery(req: Request, res: Response, next: NextFunction) {
     try {
-      const { query: { page = 1, limit = 10 } } = req;
+      const {
+        query: { page = 1, limit = 10 },
+      } = req;
       req.offset = ((page ? Number(page) : 1) - 1) * Number(limit);
       req.limit = Number(limit) ? Number(limit) : 10;
       req.page = Number(page) ? Number(page) : 1;
       return next();
     } catch (error) {
-      serverConfig.DEBUG(`Error in system middleware format request query method: ${error}`);
+      serverConfig.DEBUG(
+        `Error in system middleware format request query method: ${error}`,
+      );
       next(error);
     }
   }
