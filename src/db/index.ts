@@ -33,7 +33,11 @@ class DB {
         // await this.sequelize.sync();
       }
 
-      await defaults.runDataMigration();
+      if (serverConfig.RUN_DEFAULT_DB_MIGRATION) {
+        await this.sequelize.sync();
+        await defaults.runDataMigration();
+        serverConfig.DEBUG('Completed default data migration.');
+      }
 
       serverConfig.DEBUG('Connected to database.');
       return this.sequelize;

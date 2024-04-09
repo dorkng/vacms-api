@@ -30,6 +30,9 @@ class ServerConfig {
 
   public DB_NAME = process.env.DB_NAME;
 
+  public RUN_DEFAULT_DB_MIGRATION =
+    process.env.RUN_DEFAULT_DB_MIGRATION === 'true';
+
   public TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
 
   public TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
