@@ -1,5 +1,5 @@
 import { Court, CourtType, CourtAddress, State } from '../db/models';
-import { NotFoundError } from '../errors';
+import { ConflictError, NotFoundError } from '../errors';
 import { CsvFileParseType } from '../interfaces/csv.interface';
 import courtUtil from '../utils/court.util';
 import csvUtil from '../utils/csv.util';
@@ -68,6 +68,10 @@ class CourtService {
           label: undefined,
         });
       }
+    }
+
+    if (bulkAttributes.length === 0) {
+      throw new ConflictError('No court added.');
     }
 
     await this.CourtModel.bulkCreate(bulkAttributes, {

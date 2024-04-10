@@ -1,6 +1,6 @@
 import { WhereOptions, InferAttributes, Op } from 'sequelize';
 import { ProsecutingAgency, State } from '../db/models';
-import { NotFoundError } from '../errors';
+import { ConflictError, NotFoundError } from '../errors';
 import { QueryOptions } from '../interfaces/functions.interface';
 import prosecutingAgencyUtil from '../utils/prosecutingAgency.util';
 import stateService from './state.service';
@@ -56,6 +56,10 @@ class ProsecutingAgencyService {
           label: undefined,
         });
       }
+    }
+
+    if (bulkAttributes.length === 0) {
+      throw new ConflictError('No prosecuting agency added.');
     }
 
     await this.prosecutingAgencyModel.bulkCreate(bulkAttributes, {
