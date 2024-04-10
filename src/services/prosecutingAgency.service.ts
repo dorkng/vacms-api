@@ -51,7 +51,7 @@ class ProsecutingAgencyService {
       if (retrievedState) {
         bulkAttributes.push({
           name: Name,
-          Jurisdiction: Jurisdiction,
+          jurisdiction: Jurisdiction,
           stateId: retrievedState.id,
           label: undefined,
         });
