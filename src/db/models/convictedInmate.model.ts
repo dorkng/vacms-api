@@ -11,6 +11,7 @@ import {
   InmateSexType,
 } from '../../interfaces/inmate.interface';
 import { Court, CustodialFacility, ProsecutingAgency } from './index';
+import serverConfig from '../../config/server.config';
 
 class ConvictedInmate
   extends Model<
@@ -55,6 +56,10 @@ class ConvictedInmate
   declare optionOfFine?: string;
 
   declare dateOfConviction?: Date;
+
+  public readonly court?: Court;
+
+  public readonly prosecutingAgency?: ProsecutingAgency;
 }
 
 export function init(connection: Sequelize) {
@@ -80,6 +85,15 @@ export function init(connection: Sequelize) {
       image: {
         type: DataTypes.STRING,
         allowNull: false,
+        get() {
+          const value = this.getDataValue('image');
+
+          if (value.startsWith('http')) {
+            return value;
+          }
+
+          return `${serverConfig.BASE_URL}/images/${value}`;
+        },
       },
       sex: {
         type: DataTypes.ENUM(...Object.values(InmateSexType)),
