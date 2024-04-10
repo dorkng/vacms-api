@@ -1,6 +1,6 @@
 import { WhereOptions, InferAttributes, Op } from 'sequelize';
 import { CustodialFacility, State } from '../db/models';
-import { NotFoundError } from '../errors';
+import { ConflictError, NotFoundError } from '../errors';
 import { QueryOptions } from '../interfaces/functions.interface';
 import custodialFacilityUtil from '../utils/custodialFacility.util';
 import stateService from './state.service';
@@ -56,6 +56,10 @@ class CustodialFacilityService {
           label: undefined,
         });
       }
+    }
+
+    if (bulkAttributes.length === 0) {
+      throw new ConflictError('No custodial facility added.');
     }
 
     await this.custodialFacilityModel.bulkCreate(bulkAttributes, {

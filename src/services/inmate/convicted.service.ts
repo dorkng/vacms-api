@@ -6,7 +6,7 @@ import {
   CustodialFacility,
   ProsecutingAgency,
 } from '../../db/models';
-import { NotFoundError } from '../../errors';
+import { ConflictError, NotFoundError } from '../../errors';
 import { CsvFileParseType } from '../../interfaces/csv.interface';
 import csvUtil from '../../utils/csv.util';
 import inmateUtil from '../../utils/inmate.util';
@@ -132,6 +132,10 @@ class ConvictedInmateService {
           dateOfConviction: data['Date of Conviction'],
         });
       }
+    }
+
+    if (bulkAttributes.length === 0) {
+      throw new ConflictError('No inmate added.');
     }
 
     await this.convictedInmateModel.bulkCreate(bulkAttributes, {

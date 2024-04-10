@@ -6,7 +6,7 @@ import {
   CustodialFacility,
   ProsecutingAgency,
 } from '../../db/models';
-import { NotFoundError } from '../../errors';
+import { ConflictError, NotFoundError } from '../../errors';
 import { CsvFileParseType } from '../../interfaces/csv.interface';
 import csvUtil from '../../utils/csv.util';
 import inmateUtil from '../../utils/inmate.util';
@@ -125,6 +125,10 @@ class AwaitingTrialInmateService {
           otherMeansOfId: data['Other Means of Identification'],
         });
       }
+    }
+
+    if (bulkAttributes.length === 0) {
+      throw new ConflictError('No inmate added.');
     }
 
     await this.awaitingTrialInmateModel.bulkCreate(bulkAttributes, {
