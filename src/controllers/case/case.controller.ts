@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import serverConfig from '../../config/server.config';
 import caseService from '../../services/case.service';
 import helperUtil from '../../utils/helper.util';
+import { NotFoundError } from '../../errors';
 
 export default class CaseController {
   protected async create(
@@ -96,6 +97,8 @@ export default class CaseController {
       } = req;
 
       const result = await caseService.getBySuitNumber(value as string);
+
+      if (!result) throw new NotFoundError('Case not found.');
 
       return res.status(200).json({
         message: 'Case retrieved successfully.',

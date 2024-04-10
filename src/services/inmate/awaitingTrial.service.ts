@@ -14,6 +14,7 @@ import courtService from '../court.service';
 import custodialFacilityService from '../custodialFacility.service';
 import prosecutingAgencyService from '../prosecutingAgency.service';
 import { QueryOptions } from '../../interfaces/functions.interface';
+import caseService from '../case.service';
 
 class AwaitingTrialInmateService {
   private awaitingTrialInmateModel = AwaitingTrialInmate;
@@ -131,9 +132,12 @@ class AwaitingTrialInmateService {
       throw new ConflictError('No inmates added.');
     }
 
-    await this.awaitingTrialInmateModel.bulkCreate(bulkAttributes, {
-      ignoreDuplicates: true,
-    });
+    const data = await this.awaitingTrialInmateModel.bulkCreate(
+      bulkAttributes,
+      { ignoreDuplicates: true },
+    );
+
+    caseService.handleForInmates(this.awaitingTrialInmateModel, data);
   }
 
   public async get(id: number): Promise<AwaitingTrialInmate> {

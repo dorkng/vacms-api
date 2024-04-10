@@ -26,6 +26,8 @@ class Court
   declare numberOfCourtRooms?: number;
 
   declare chiefRegistrar?: string;
+
+  public readonly address?: CourtAddress;
 }
 
 export function init(connection: Sequelize) {

@@ -22,6 +22,8 @@ class CourtAddress
   declare city?: string;
 
   declare stateId: number;
+
+  public readonly state?: State;
 }
 
 export function init(connection: Sequelize) {
