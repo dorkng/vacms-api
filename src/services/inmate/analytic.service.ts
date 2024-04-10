@@ -113,7 +113,7 @@ class InmateAnalytic {
         },
       ],
       order: [['stateName', 'ASC']],
-      group: ['custodialFacility.state.name'],
+      group: ['custodialFacility.state.id', 'custodialFacility.state.name'],
     });
 
     if (result) {
@@ -141,7 +141,11 @@ class InmateAnalytic {
         },
       ],
       order: [['stateName', 'ASC']],
-      group: ['custodialFacility.state.name', 'gender'],
+      group: [
+        'custodialFacility.state.id',
+        'custodialFacility.state.name',
+        'gender',
+      ],
     });
 
     if (result) {
@@ -182,7 +186,11 @@ class InmateAnalytic {
         },
       ],
       order: [['stateName', 'ASC']],
-      group: ['custodialFacility.state.name', 'custodialFacility.name'],
+      group: [
+        'custodialFacility.state.id',
+        'custodialFacility.state.name',
+        'custodialFacility.name',
+      ],
     });
 
     if (result) {
