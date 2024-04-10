@@ -11,7 +11,7 @@ import {
   InmateSexType,
 } from '../../interfaces/inmate.interface';
 import { Court, CustodialFacility, ProsecutingAgency } from './index';
-import serverConfig from '../../config/server.config';
+import helperUtil from '../../utils/helper.util';
 
 class ConvictedInmate
   extends Model<
@@ -88,11 +88,7 @@ export function init(connection: Sequelize) {
         get() {
           const value = this.getDataValue('image');
 
-          if (value.startsWith('http')) {
-            return value;
-          }
-
-          return `${serverConfig.BASE_URL}/images/${value}`;
+          return helperUtil.getFileUrl(value);
         },
       },
       sex: {

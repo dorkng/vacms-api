@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { Op, WhereOptions, InferAttributes, fn, col } from 'sequelize';
+import {
+  Op,
+  WhereOptions,
+  InferAttributes,
+  fn,
+  col,
+  ModelStatic,
+} from 'sequelize';
 import {
   Case,
   CaseAdjournment,
@@ -9,6 +16,10 @@ import {
   CaseReport,
   CaseDocument,
   Court,
+  AwaitingTrialInmate,
+  ConvictedInmate,
+  CourtAddress,
+  ProsecutingAgency,
 } from '../db/models';
 import { ConflictError, NotFoundError } from '../errors';
 import caseUtil from '../utils/case.util';
@@ -57,6 +68,74 @@ class CaseService {
     return newCase;
   }
 
+  public async handleForInmates(
+    model: ModelStatic<AwaitingTrialInmate | ConvictedInmate>,
+    data: AwaitingTrialInmate[] | ConvictedInmate[],
+  ): Promise<void> {
+    const casesAttributes = [];
+
+    const inmatesToUpdate: { id: number; caseNumber: string }[] = [];
+
+    for (const inmate of data) {
+      await inmate.reload({
+        include: [
+          {
+            model: Court,
+            as: 'court',
+            include: [
+              { model: CourtAddress, as: 'address', include: ['state'] },
+            ],
+          },
+          {
+            model: ProsecutingAgency,
+            as: 'prosecutingAgency',
+          },
+        ],
+      });
+
+      let suitNumber = inmate.caseNumber;
+
+      if (inmate.caseNumber) {
+        const caseExists = await this.getBySuitNumber(inmate.caseNumber);
+
+        if (!caseExists) {
+          casesAttributes.push({
+            suitNumber,
+            initiatingParties: inmate.prosecutingAgency.name,
+            respondingParties: `${inmate.firstName} ${inmate.lastName}`,
+            type: CaseType.criminal,
+            courtId: inmate.courtId,
+          });
+        }
+      } else {
+        suitNumber = await this.getCaseNumber(inmate);
+
+        casesAttributes.push({
+          suitNumber,
+          initiatingParties: inmate.prosecutingAgency.name,
+          respondingParties: `${inmate.firstName} ${inmate.lastName}`,
+          type: CaseType.criminal,
+          courtId: inmate.courtId,
+        });
+      }
+
+      inmatesToUpdate.push({
+        id: inmate.id,
+        caseNumber: suitNumber,
+      });
+    }
+
+    await this.CaseModel.bulkCreate(casesAttributes, {
+      ignoreDuplicates: true,
+    });
+
+    for (const inmate of inmatesToUpdate) {
+      const { caseNumber, id } = inmate;
+
+      await model.update({ caseNumber }, { where: { id } });
+    }
+  }
+
   public async update(id: number, data: unknown): Promise<Case> {
     const retrievedCase = await this.getById(id);
     const attributes = await caseUtil.caseUpdateSchema.validateAsync(data);
@@ -102,8 +181,6 @@ class CaseService {
         },
       ],
     });
-
-    if (!caseExists) throw new NotFoundError('Case not found.');
 
     return caseExists;
   }
@@ -385,6 +462,40 @@ class CaseService {
 
     const difference = count - lastMonthCount;
     return { count, difference };
+  }
+
+  private async getCaseNumber(
+    inmate: AwaitingTrialInmate | ConvictedInmate,
+  ): Promise<string> {
+    while (true) {
+      let suitNumber = this.generateRandomSuitNumber(inmate.court);
+
+      const count = await this.CaseModel.count({
+        where: { suitNumber },
+      });
+
+      if (count === 0) {
+        return suitNumber;
+      }
+    }
+  }
+
+  private generateRandomSuitNumber(court: Court): string {
+    // Extract the first two letters of the state name
+    const stateAbbreviation = court.address.state.name
+      .slice(0, 2)
+      .toUpperCase();
+
+    // Extract the first two letters of the court name
+    const courtAbbreviation = court.name.slice(0, 2).toUpperCase();
+
+    // Generate six random digits
+    const randomDigits = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Format the suit number
+    const suitNumber = `${stateAbbreviation}/${courtAbbreviation}/${randomDigits}`;
+
+    return suitNumber;
   }
 }
 

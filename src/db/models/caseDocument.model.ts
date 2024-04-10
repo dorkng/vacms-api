@@ -10,8 +10,8 @@ import {
   ICaseDocumentAttribute,
   CaseDocumentType,
 } from '../../interfaces/case.interface';
-import serverConfig from '../../config/server.config';
 import { Case } from './index';
+import helperUtil from '../../utils/helper.util';
 
 class CaseDocument
   extends Model<
@@ -50,11 +50,7 @@ export function init(connection: Sequelize) {
         get() {
           const value = this.getDataValue('path');
 
-          if (value.startsWith('http')) {
-            return value;
-          }
-
-          return `${serverConfig.BASE_URL}/images/${value}`;
+          return helperUtil.getFileUrl(value);
         },
       },
     },

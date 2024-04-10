@@ -7,7 +7,6 @@ import {
   Sequelize,
 } from 'sequelize';
 import { ICourtTypeAttribute } from '../../interfaces/court.interface';
-import serverConfig from '../../config/server.config';
 import helperUtil from '../../utils/helper.util';
 
 class CourtType
@@ -48,13 +47,7 @@ export function init(connection: Sequelize) {
         get() {
           const value = this.getDataValue('logoUrl');
 
-          if (value) {
-            if (value.startsWith('http')) {
-              return value;
-            }
-
-            return `${serverConfig.BASE_URL}/images/${value}`;
-          }
+          return helperUtil.getFileUrl(value);
         },
       },
     },
