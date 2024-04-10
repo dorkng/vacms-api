@@ -85,12 +85,34 @@ class CourtService {
     return court;
   }
 
-  public async getByName(name: string): Promise<State> {
+  public async getByNameTypeAndState(
+    name: string,
+    type: string,
+    state: string,
+  ): Promise<Court> {
     const label = helperUtil.getLabel(name);
 
-    return this.CourtModel.findOne({
+    let court = await this.CourtModel.findOne({
       where: { label },
     });
+
+    if (!court) {
+      const [retrievedType, retrievedAddress] = await Promise.all([
+        this.getOrCreateTypeByName(type),
+        this.getOrCreateAddressByName(state),
+      ]);
+
+      if (retrievedType && retrievedAddress) {
+        court = await this.CourtModel.create({
+          name,
+          typeId: retrievedType.id,
+          addressId: retrievedAddress.id,
+          label: undefined,
+        });
+      }
+    }
+
+    return court;
   }
 
   public async getAll(
