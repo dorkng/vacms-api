@@ -1,4 +1,5 @@
 import moment from 'moment';
+import serverConfig from '../config/server.config';
 
 class HelperUtil {
   public getPaginationData(limit: number, page: number, totalCount: number) {
@@ -22,6 +23,16 @@ class HelperUtil {
   public getLabel(name: string): string {
     const label = name.replace(/([^\w ]|_)/g, '');
     return `${label.replace(/\s+/g, '-').toLowerCase()}`;
+  }
+
+  public getFileUrl(value: string): string | null {
+    if (value) {
+      if (value.startsWith('http')) {
+        return value;
+      }
+
+      return `${serverConfig.BASE_URL}/images/${value}`;
+    }
   }
 
   private setFormattedDate(time: string, date: Date) {
