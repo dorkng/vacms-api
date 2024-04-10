@@ -116,12 +116,14 @@ class InmateAnalytic {
       group: ['custodialFacility.state.name'],
     });
 
-    const data = result.reduce((acc, item) => {
-      acc[item.dataValues.stateName] = item.dataValues.count;
-      return acc;
-    }, {});
+    if (result) {
+      const data = result.reduce((acc, item) => {
+        acc[item.dataValues.stateName] = item.dataValues.count;
+        return acc;
+      }, {});
 
-    return data;
+      return data;
+    }
   }
 
   private async getGenderByState(model: ModelStatic<Model>) {
@@ -142,25 +144,27 @@ class InmateAnalytic {
       group: ['custodialFacility.state.name', 'gender'],
     });
 
-    const data = {};
+    if (result) {
+      const data = {};
 
-    result.forEach((doc) => {
-      const { stateName, gender, count } = doc.dataValues;
+      result.forEach((doc) => {
+        const { stateName, gender, count } = doc.dataValues;
 
-      if (!data[stateName]) {
-        data[stateName] = { male: 0, female: 0 };
-      }
+        if (!data[stateName]) {
+          data[stateName] = { male: 0, female: 0 };
+        }
 
-      if (gender === InmateSexType.MALE) {
-        data[stateName].male += count;
-      } else if (gender === InmateSexType.FEMALE) {
-        data[stateName].female += count;
-      }
-    });
+        if (gender === InmateSexType.MALE) {
+          data[stateName].male += count;
+        } else if (gender === InmateSexType.FEMALE) {
+          data[stateName].female += count;
+        }
+      });
 
-    return Object.entries(data).map(([state, counts]) => ({
-      [state]: counts,
-    }));
+      return Object.entries(data).map(([state, counts]) => ({
+        [state]: counts,
+      }));
+    }
   }
 
   private async getCustodialFacilityByState(model: ModelStatic<Model>) {
@@ -181,22 +185,24 @@ class InmateAnalytic {
       group: ['custodialFacility.state.name', 'custodialFacility.name'],
     });
 
-    const data = {};
+    if (result) {
+      const data = {};
 
-    result.forEach((doc) => {
-      const { stateName, capacity, count } = doc.dataValues;
+      result.forEach((doc) => {
+        const { stateName, capacity, count } = doc.dataValues;
 
-      if (!data[stateName]) {
-        data[stateName] = { inmates: 0, capacity: 0 };
-      }
+        if (!data[stateName]) {
+          data[stateName] = { inmates: 0, capacity: 0 };
+        }
 
-      data[stateName].inmates += count;
-      data[stateName].capacity += capacity;
-    });
+        data[stateName].inmates += count;
+        data[stateName].capacity += capacity;
+      });
 
-    return Object.entries(data).map(([state, counts]) => ({
-      [state]: counts,
-    }));
+      return Object.entries(data).map(([state, counts]) => ({
+        [state]: counts,
+      }));
+    }
   }
 }
 
