@@ -156,7 +156,10 @@ class CaseService {
         {
           model: Court,
           as: 'court',
-          include: ['type', 'address'],
+          include: [
+            'type',
+            { model: CourtAddress, as: 'address', include: ['state'] },
+          ],
         },
         'documents',
         'adjournments',
@@ -168,7 +171,10 @@ class CaseService {
             {
               model: Court,
               as: 'court',
-              include: ['type', 'address'],
+              include: [
+                'type',
+                { model: CourtAddress, as: 'address', include: ['state'] },
+              ],
             },
             'verdict',
           ],
@@ -201,7 +207,10 @@ class CaseService {
         {
           model: Court,
           as: 'court',
-          include: ['type', 'address'],
+          include: [
+            'type',
+            { model: CourtAddress, as: 'address', include: ['state'] },
+          ],
         },
         'documents',
         'adjournments',
@@ -213,7 +222,10 @@ class CaseService {
             {
               model: Court,
               as: 'court',
-              include: ['type', 'address'],
+              include: [
+                'type',
+                { model: CourtAddress, as: 'address', include: ['state'] },
+              ],
             },
             'verdict',
           ],
@@ -256,7 +268,10 @@ class CaseService {
         {
           model: Court,
           as: 'court',
-          include: ['type', 'address'],
+          include: [
+            'type',
+            { model: CourtAddress, as: 'address', include: ['state'] },
+          ],
         },
       ],
       limit: limit,
