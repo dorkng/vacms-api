@@ -17,15 +17,14 @@ export default class InmateMetaController {
         convictedCount,
         awaitingTrialVsConvictedByState,
         maleVsFemaleByState,
+        custodialFacilityInmateVsCapacityByState,
       ] = await Promise.all([
         awaitingTrialService.getTotalCount(),
         convictedService.getTotalCount(),
         analyticService.awaitingTrialVsConvictedByState(),
         analyticService.maleVsFemaleByState(),
+        analyticService.custodialFacilityInmateVsCapacityByState(),
       ]);
-
-      const custodialFacilityInmateVsCapacityByState =
-        await analyticService.custodialFacilityInmateVsCapacityByState();
 
       return res.status(200).json({
         message: 'Dashboard statistics retrieved successfully.',

@@ -128,7 +128,7 @@ class AwaitingTrialInmateService {
     }
 
     if (bulkAttributes.length === 0) {
-      throw new ConflictError('No inmate added.');
+      throw new ConflictError('No inmates added.');
     }
 
     await this.awaitingTrialInmateModel.bulkCreate(bulkAttributes, {
