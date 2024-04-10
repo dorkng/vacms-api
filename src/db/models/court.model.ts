@@ -23,7 +23,7 @@ class Court
 
   declare addressId: number;
 
-  declare numberOfCourtRooms: number;
+  declare numberOfCourtRooms?: number;
 
   declare chiefRegistrar?: string;
 }
@@ -58,7 +58,7 @@ export function init(connection: Sequelize) {
       },
       numberOfCourtRooms: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       chiefRegistrar: {
         type: DataTypes.STRING,

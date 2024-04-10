@@ -17,9 +17,9 @@ class CourtAddress
   implements ICourtAddressAttribute {
   declare id: CreationOptional<number>;
 
-  declare street: string;
+  declare street?: string;
 
-  declare city: string;
+  declare city?: string;
 
   declare stateId: number;
 }
@@ -34,11 +34,11 @@ export function init(connection: Sequelize) {
       },
       street: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       city: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       stateId: {
         type: DataTypes.INTEGER.UNSIGNED,

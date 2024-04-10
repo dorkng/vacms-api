@@ -19,7 +19,7 @@ class CourtType
 
   declare label: string;
 
-  declare logoUrl: string;
+  declare logoUrl?: string;
 }
 
 export function init(connection: Sequelize) {
@@ -44,15 +44,17 @@ export function init(connection: Sequelize) {
       },
       logoUrl: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         get() {
           const value = this.getDataValue('logoUrl');
 
-          if (value.startsWith('http')) {
-            return value;
-          }
+          if (value) {
+            if (value.startsWith('http')) {
+              return value;
+            }
 
-          return `${serverConfig.BASE_URL}/images/${value}`;
+            return `${serverConfig.BASE_URL}/images/${value}`;
+          }
         },
       },
     },

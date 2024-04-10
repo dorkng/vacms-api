@@ -63,6 +63,8 @@ class CsvUtil {
         'Custodial Facility',
         'Case Number',
         'Court',
+        'Court Type',
+        'Court State',
         'Offense',
         'Offense Interpretation',
         'Prosecuting Agency',
@@ -81,6 +83,8 @@ class CsvUtil {
         'Custodial Facility',
         'Case Number',
         'Court',
+        'Court Type',
+        'Court State',
         'Offense',
         'Offense Interpretation',
         'Prosecuting Agency',
@@ -91,6 +95,8 @@ class CsvUtil {
         'Option of Fine',
         'Date of Conviction',
       ];
+    } else if (type === CsvFileParseType.COURT) {
+      expectedHeaders = ['Name', 'Type', 'State'];
     } else if (type === CsvFileParseType.CUSTODIAL_FACILITY) {
       expectedHeaders = ['Name', 'Capacity', 'State'];
     } else if (type === CsvFileParseType.PROSECUTING_AGENCY) {
@@ -98,6 +104,7 @@ class CsvUtil {
     } else {
       throw new ConflictError('Invalid CSV type.');
     }
+
     return expectedHeaders;
   }
 }

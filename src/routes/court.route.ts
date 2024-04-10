@@ -1,10 +1,13 @@
 import { Router } from 'express';
 import {
-  CourtTypeController, CourtAddressController,
+  CourtTypeController,
+  CourtAddressController,
   CourtController,
+  CourtBulkController,
 } from '../controllers/court';
 import authMiddleware from '../middlewares/auth.middleware';
 import systemMiddleware from '../middlewares/system.middleware';
+import fileMiddleware from '../middlewares/file.middleware';
 
 class CourtTypeRoutes extends CourtTypeController {
   public router: Router;
@@ -16,15 +19,10 @@ class CourtTypeRoutes extends CourtTypeController {
   }
 
   private routes(): void {
-    this.router.route('/')
-      .post(
-        authMiddleware.validateSuperAdminAccess,
-        this.create,
-      )
-      .get(
-        systemMiddleware.formatRequestQuery,
-        this.index,
-      );
+    this.router
+      .route('/')
+      .post(authMiddleware.validateSuperAdminAccess, this.create)
+      .get(systemMiddleware.formatRequestQuery, this.index);
 
     this.router.get('/:id', this.get);
 
@@ -44,15 +42,10 @@ class CourtAddressRoutes extends CourtAddressController {
   }
 
   private routes(): void {
-    this.router.route('/')
-      .post(
-        authMiddleware.validateSuperAdminAccess,
-        this.create,
-      )
-      .get(
-        systemMiddleware.formatRequestQuery,
-        this.index,
-      );
+    this.router
+      .route('/')
+      .post(authMiddleware.validateSuperAdminAccess, this.create)
+      .get(systemMiddleware.formatRequestQuery, this.index);
 
     this.router.get('/:id', this.get);
 
@@ -62,6 +55,22 @@ class CourtAddressRoutes extends CourtAddressController {
   }
 }
 
+class CourtBulkRoutes extends CourtBulkController {
+  public router: Router;
+
+  constructor() {
+    super();
+    this.router = Router();
+    this.routes();
+  }
+
+  private routes(): void {
+    this.router
+      .route('/')
+      .post(fileMiddleware.upload, this.create)
+      .get(this.index);
+  }
+}
 
 class CourtRoutes extends CourtController {
   public router: Router;
@@ -73,19 +82,16 @@ class CourtRoutes extends CourtController {
   }
 
   private routes(): void {
-    this.router.use('/type', new CourtTypeRoutes().router);
-
     this.router.use('/address', new CourtAddressRoutes().router);
 
-    this.router.route('/')
-      .post(
-        authMiddleware.validateSuperAdminAccess,
-        this.create,
-      )
-      .get(
-        systemMiddleware.formatRequestQuery,
-        this.index,
-      );
+    this.router.use('/bulk', new CourtBulkRoutes().router);
+
+    this.router.use('/type', new CourtTypeRoutes().router);
+
+    this.router
+      .route('/')
+      .post(authMiddleware.validateSuperAdminAccess, this.create)
+      .get(systemMiddleware.formatRequestQuery, this.index);
 
     this.router.get('/:id', this.get);
 

@@ -1,6 +1,8 @@
 import { Court, CourtType, CourtAddress, State } from '../db/models';
 import { NotFoundError } from '../errors';
+import { CsvFileParseType } from '../interfaces/csv.interface';
 import courtUtil from '../utils/court.util';
+import csvUtil from '../utils/csv.util';
 import helperUtil from '../utils/helper.util';
 import stateService from './state.service';
 
@@ -41,6 +43,38 @@ class CourtService {
     return court.reload({ include: this.courtIncludeable });
   }
 
+  public async bulkCreate(file: Buffer): Promise<void> {
+    const parsedData = await csvUtil.parseCsvFile(file, CsvFileParseType.COURT);
+
+    const validatedData = await courtUtil.courtBulkCreationSchema.validateAsync(
+      parsedData,
+    );
+
+    const bulkAttributes = [];
+
+    for (const data of validatedData) {
+      const { Name, Type, State: givenStateName } = data;
+
+      const [retrievedType, retrievedAddress] = await Promise.all([
+        this.getOrCreateTypeByName(Type),
+        this.getOrCreateAddressByName(givenStateName),
+      ]);
+
+      if (retrievedType && retrievedAddress) {
+        bulkAttributes.push({
+          name: Name,
+          typeId: retrievedType.id,
+          addressId: retrievedAddress.id,
+          label: undefined,
+        });
+      }
+    }
+
+    await this.CourtModel.bulkCreate(bulkAttributes, {
+      updateOnDuplicate: ['typeId', 'addressId'],
+    });
+  }
+
   public async get(id: number): Promise<Court> {
     const court = await this.CourtModel.findByPk(id, {
       include: this.courtIncludeable,
@@ -51,12 +85,34 @@ class CourtService {
     return court;
   }
 
-  public async getByName(name: string): Promise<State> {
+  public async getByNameTypeAndState(
+    name: string,
+    type: string,
+    state: string,
+  ): Promise<Court> {
     const label = helperUtil.getLabel(name);
 
-    return this.CourtModel.findOne({
+    let court = await this.CourtModel.findOne({
       where: { label },
     });
+
+    if (!court) {
+      const [retrievedType, retrievedAddress] = await Promise.all([
+        this.getOrCreateTypeByName(type),
+        this.getOrCreateAddressByName(state),
+      ]);
+
+      if (retrievedType && retrievedAddress) {
+        court = await this.CourtModel.create({
+          name,
+          typeId: retrievedType.id,
+          addressId: retrievedAddress.id,
+          label: undefined,
+        });
+      }
+    }
+
+    return court;
   }
 
   public async getAll(
@@ -124,6 +180,19 @@ class CourtService {
     return courtType;
   }
 
+  public async getOrCreateTypeByName(name: string): Promise<CourtType> {
+    const label = helperUtil.getLabel(name);
+
+    const attributes = { name, label };
+
+    const [courtType] = await this.CourtTypeModel.findOrCreate({
+      where: { label },
+      defaults: attributes,
+    });
+
+    return courtType;
+  }
+
   public async getAllTypes(
     limit: number,
     offset: number,
@@ -178,6 +247,21 @@ class CourtService {
     if (!courtAddress) throw new NotFoundError('Court address not found.');
 
     return courtAddress;
+  }
+
+  public async getOrCreateAddressByName(state: string): Promise<CourtAddress> {
+    const retrievedState = await stateService.getByName(state);
+
+    if (retrievedState) {
+      const attributes = { stateId: retrievedState.id };
+
+      const [address] = await this.CourtAddressModel.findOrCreate({
+        where: attributes,
+        defaults: attributes,
+      });
+
+      return address;
+    }
   }
 
   public async getAllAddresses(

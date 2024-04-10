@@ -2,13 +2,13 @@ export interface ICourtTypeAttribute {
   id: number;
   name: string;
   label: string;
-  logoUrl: string;
+  logoUrl?: string;
 }
 
 export interface ICourtAddressAttribute {
   id: number;
-  street: string;
-  city: string;
+  street?: string;
+  city?: string;
   stateId: number;
 }
 
@@ -18,6 +18,6 @@ export interface ICourtAttribute {
   label: string;
   typeId: number;
   addressId: number;
-  numberOfCourtRooms: number;
+  numberOfCourtRooms?: number;
   chiefRegistrar?: string;
 }

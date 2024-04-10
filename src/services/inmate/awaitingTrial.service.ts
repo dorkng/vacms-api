@@ -98,7 +98,11 @@ class AwaitingTrialInmateService {
     for (const data of validatedData) {
       const [custodialFacility, court, prosecutingAgency] = await Promise.all([
         custodialFacilityService.getByName(data['Custodial Facility']),
-        courtService.getByName(data.Court),
+        courtService.getByNameTypeAndState(
+          data.Court,
+          data['Court Type'],
+          data['Court State'],
+        ),
         prosecutingAgencyService.getByName(data['Prosecuting Agency']),
       ]);
 

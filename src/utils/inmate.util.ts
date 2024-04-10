@@ -108,6 +108,8 @@ class InmateUtil {
         .allow(...this.allowedData)
         .label('Case Number'),
       Court: Joi.string().required().label('Court'),
+      'Court Type': Joi.string().required().label('Court Type'),
+      'Court State': Joi.string().required().label('Court State'),
       Offense: Joi.string()
         .allow(...this.allowedData)
         .label('Offense'),
@@ -151,6 +153,8 @@ class InmateUtil {
         .allow(...this.allowedData)
         .label('Case Number'),
       Court: Joi.string().required().label('Court'),
+      'Court Type': Joi.string().required().label('Court Type'),
+      'Court State': Joi.string().required().label('Court State'),
       Offense: Joi.string()
         .allow(...this.allowedData)
         .label('Offense'),
