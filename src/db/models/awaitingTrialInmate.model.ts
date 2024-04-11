@@ -27,7 +27,7 @@ class AwaitingTrialInmate
 
   declare otherName?: string;
 
-  declare image: string;
+  declare image?: string;
 
   declare sex: InmateSexType;
 
@@ -78,7 +78,7 @@ export function init(connection: Sequelize) {
       },
       image: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         get() {
           const value = this.getDataValue('image');
 

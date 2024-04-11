@@ -8,7 +8,7 @@ export interface IAwaitingTrialInmateAttribute {
   firstName: string;
   lastName: string;
   otherName?: string;
-  image: string;
+  image?: string;
   sex: InmateSexType;
   custodyNumber?: string;
   custodialFacilityId: number;
@@ -27,7 +27,7 @@ export interface IConvictedInmateAttribute {
   firstName: string;
   lastName: string;
   otherName?: string;
-  image: string;
+  image?: string;
   sex: InmateSexType;
   custodyNumber?: string;
   custodialFacilityId: number;
