@@ -10,7 +10,9 @@ class InmateUtil {
     otherName: Joi.string()
       .allow(...this.allowedData)
       .label('Other Name'),
-    image: Joi.string().required().label('Image'),
+    image: Joi.string()
+      .allow(...this.allowedData)
+      .label('Image'),
     sex: Joi.string()
       .valid(...Object.values(InmateSexType))
       .required()
@@ -47,7 +49,9 @@ class InmateUtil {
     otherName: Joi.string()
       .allow(...this.allowedData)
       .label('Other Name'),
-    image: Joi.string().required().label('Image'),
+    image: Joi.string()
+      .allow(...this.allowedData)
+      .label('Image'),
     sex: Joi.string()
       .valid(...Object.values(InmateSexType))
       .required()
@@ -94,7 +98,9 @@ class InmateUtil {
       'Other Name': Joi.string()
         .allow(...this.allowedData)
         .label('Other Name'),
-      Image: Joi.string().required().label('Image'),
+      Image: Joi.string()
+        .allow(...this.allowedData)
+        .label('Image'),
       Sex: Joi.string()
         .uppercase()
         .valid(...Object.values(InmateSexType))
@@ -139,7 +145,9 @@ class InmateUtil {
       'Other Name': Joi.string()
         .allow(...this.allowedData)
         .label('Other Name'),
-      Image: Joi.string().required().label('Image'),
+      Image: Joi.string()
+        .allow(...this.allowedData)
+        .label('Image'),
       Sex: Joi.string()
         .uppercase()
         .valid(...Object.values(InmateSexType))
