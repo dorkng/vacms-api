@@ -171,14 +171,14 @@ class AwaitingTrialInmateService {
 
     if (search) {
       where[Op.or] = {
-        firstName: { [Op.like]: search },
-        lastName: { [Op.like]: search },
-        otherName: { [Op.like]: search },
-        custodyNumber: { [Op.like]: search },
-        caseNumber: { [Op.like]: search },
-        offense: { [Op.like]: search },
-        offenseInterpretation: { [Op.like]: search },
-        otherMeansOfId: { [Op.like]: search },
+        firstName: { [Op.like]: `%${search}%` },
+        lastName: { [Op.like]: `%${search}%` },
+        otherName: { [Op.like]: `%${search}%` },
+        custodyNumber: { [Op.like]: `%${search}%` },
+        caseNumber: { [Op.like]: `%${search}%` },
+        offense: { [Op.like]: `%${search}%` },
+        offenseInterpretation: { [Op.like]: `%${search}%` },
+        otherMeansOfId: { [Op.like]: `%${search}%` },
       };
     }
 
