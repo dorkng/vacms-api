@@ -6,5 +6,8 @@ declare module 'express' {
     limit: number;
     offset: number;
     page: number;
+    custodialFacilityId?: number[];
+    courtId?: number[];
+    prosecutingAgencyId?: number[];
   }
 }

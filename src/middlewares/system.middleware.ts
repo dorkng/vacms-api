@@ -41,11 +41,31 @@ class SystemMiddlewares {
   public formatRequestQuery(req: Request, res: Response, next: NextFunction) {
     try {
       const {
-        query: { page = 1, limit = 10 },
+        query: {
+          page = 1,
+          limit = 10,
+          custodialFacilityId,
+          courtId,
+          prosecutingAgencyId,
+        },
       } = req;
+
       req.offset = ((page ? Number(page) : 1) - 1) * Number(limit);
       req.limit = Number(limit) ? Number(limit) : 10;
       req.page = Number(page) ? Number(page) : 1;
+
+      req.custodialFacilityId = custodialFacilityId
+        ? ((custodialFacilityId as string).split(',') as unknown as number[])
+        : null;
+
+      req.courtId = courtId
+        ? ((courtId as string).split(',') as unknown as number[])
+        : null;
+
+      req.prosecutingAgencyId = prosecutingAgencyId
+        ? ((prosecutingAgencyId as string).split(',') as unknown as number[])
+        : null;
+
       return next();
     } catch (error) {
       serverConfig.DEBUG(

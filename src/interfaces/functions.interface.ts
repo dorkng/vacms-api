@@ -7,6 +7,9 @@ export interface QueryOptions {
   type?: string;
   search?: string;
   accessLevel?: string;
+  custodialFacilityId?: number[];
+  courtId?: number[];
+  prosecutingAgencyId?: number[];
 }
 
 export interface ICaseDocumentInput {

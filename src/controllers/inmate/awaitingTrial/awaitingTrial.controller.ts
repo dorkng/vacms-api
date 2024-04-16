@@ -37,12 +37,18 @@ export default class AwaitingTrialInmateController {
         limit,
         offset,
         page,
+        custodialFacilityId,
+        courtId,
+        prosecutingAgencyId,
       } = req;
 
       const opts = {
         limit,
         offset,
         search: search as string,
+        custodialFacilityId,
+        courtId,
+        prosecutingAgencyId,
       };
 
       const inmates = await inmateAwaitingTrialService.getAll(opts);
@@ -52,6 +58,7 @@ export default class AwaitingTrialInmateController {
         page,
         inmates.totalCount,
       );
+
       return res.status(200).json({
         message: 'Inmates retrieved successfully.',
         data: { ...inmates, ...paginationData },
