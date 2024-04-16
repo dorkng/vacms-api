@@ -37,12 +37,18 @@ export default class ConvictedInmateController {
         limit,
         offset,
         page,
+        custodialFacilityId,
+        courtId,
+        prosecutingAgencyId,
       } = req;
 
       const opts = {
         limit,
         offset,
         search: search as string,
+        custodialFacilityId,
+        courtId,
+        prosecutingAgencyId,
       };
 
       const inmates = await inmateConvictedService.getAll(opts);

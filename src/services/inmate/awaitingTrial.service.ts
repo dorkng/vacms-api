@@ -1,4 +1,4 @@
-import { WhereOptions, InferAttributes, Op } from 'sequelize';
+import { WhereOptions, Op } from 'sequelize';
 import {
   AwaitingTrialInmate,
   Court,
@@ -158,17 +158,41 @@ class AwaitingTrialInmateService {
   public async getAll(
     opts: QueryOptions,
   ): Promise<{ result: AwaitingTrialInmate[]; totalCount: number }> {
-    const { limit, offset, search } = opts;
+    const {
+      limit,
+      offset,
+      search,
+      custodialFacilityId,
+      courtId,
+      prosecutingAgencyId,
+    } = opts;
 
-    const where: WhereOptions<
-    InferAttributes<AwaitingTrialInmate, { omit: never }>
-    > = {
-      [Op.or]: {
-        firstName: { [Op.like]: search ? `%${search}%` : '%' },
-        lastName: { [Op.like]: search ? `%${search}%` : '%' },
-        otherName: { [Op.like]: search ? `%${search}%` : '%' },
-      },
-    };
+    const where: WhereOptions<AwaitingTrialInmate> = {};
+
+    if (search) {
+      where[Op.or] = {
+        firstName: { [Op.like]: search },
+        lastName: { [Op.like]: search },
+        otherName: { [Op.like]: search },
+        custodyNumber: { [Op.like]: search },
+        caseNumber: { [Op.like]: search },
+        offense: { [Op.like]: search },
+        offenseInterpretation: { [Op.like]: search },
+        otherMeansOfId: { [Op.like]: search },
+      };
+    }
+
+    if (custodialFacilityId) {
+      where.custodialFacilityId = { [Op.in]: custodialFacilityId };
+    }
+
+    if (courtId) {
+      where.courtId = { [Op.in]: courtId };
+    }
+
+    if (prosecutingAgencyId) {
+      where.prosecutingAgencyId = { [Op.in]: prosecutingAgencyId };
+    }
 
     const { rows, count } = await this.awaitingTrialInmateModel.findAndCountAll(
       {
